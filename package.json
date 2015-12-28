@@ -1,0 +1,24 @@
+{
+  "name": "spur-pointer-events",
+  "version": "0.1.0",
+  "description": "Cross-browser & cross-platform event system based on the PointerEvent API.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spur/pointer-events.git"
+  },
+  "scripts": {
+    "prepublish": "./node_modules/.bin/babel -d lib src/  --presets es2015,react"
+  },
+  "keywords": [
+    "event",
+    "pointer",
+    "pointerevent"
+  ],
+  "author": "Paul Colleoni (http://github.com/polco)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spur/pointer-events/issues"
+  },
+  "homepage": "https://github.com/spur/pointer-events#readme"
+}
