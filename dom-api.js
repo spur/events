@@ -13,7 +13,7 @@ function hasListener(eventType) {
   return listeners[eventType].count > 0;
 }
 
-function dispatchEventOnElement(element, typeMap) {
+function dispatchEventOnElement(element, typeMap, event) {
   var id = element.getAttribute(ATTRIBUTE_NAME);
   var entry = id && typeMap.map[id];
   if (entry) {
@@ -28,7 +28,7 @@ function dispatchEventOnElement(element, typeMap) {
 function dispatchEventOn(event) {
   var typeMap = listeners[event.type];
   var element = event.target;
-  dispatchEventOnElement(element, typeMap);
+  dispatchEventOnElement(element, typeMap, event);
 }
 
 function dispatchEvent(event) {
@@ -37,7 +37,7 @@ function dispatchEvent(event) {
   var typeMap = listeners[event.type];
   var element = event.target;
   while (element !== null) {
-    dispatchEventOnElement(element, typeMap);
+    dispatchEventOnElement(element, typeMap, event);
 
     if (event.propagationStopped) { break; }
     element = element.parentElement;
@@ -91,13 +91,13 @@ var removeListener = function (element, type, listener) {
   }
 };
 
-EventTarget.prototype.addListener = function (type, listener, options) {
-  addListener(this, type, listener, options);
-};
+// EventTarget.prototype.addListener = function (type, listener, options) {
+//   addListener(this, type, listener, options);
+// };
 
-EventTarget.prototype.removeListener = function (type, listener) {
-  removeListener(this, type, listener);
-};
+// EventTarget.prototype.removeListener = function (type, listener) {
+//   removeListener(this, type, listener);
+// };
 
 var addListenerById = function (element, type, id, listener) {
 

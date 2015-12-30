@@ -7,6 +7,7 @@ var POINTER_MOVE = 'pointermove';
 var POINTER_UP = 'pointerup';
 var POINTER_CANCEL = 'pointercancel';
 var POINTER_ENTER = 'pointerenter';
+var POINTER_OVER = 'pointerover';
 var POINTER_LEAVE = 'pointerleave';
 var POINTER_OUT = 'pointerout';
 
@@ -22,6 +23,7 @@ var pointerEventTypes = {
   up: POINTER_UP,
   cancel: POINTER_CANCEL,
   enter: POINTER_ENTER,
+  over: POINTER_OVER,
   leave: POINTER_LEAVE,
   out: POINTER_OUT
 };

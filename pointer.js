@@ -18,6 +18,7 @@ var events = [
   'pointerenter',
   'pointerleave',
   'pointerout',
+  'pointerover',
   'pointercancel'
 ];
 

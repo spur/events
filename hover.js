@@ -1,7 +1,6 @@
 var domAPI = require('./dom-api.js');
 var dispatchEvent = domAPI.dispatchEventOn;
 var dispatchEventOn = domAPI.dispatchEventOn;
-var dispatchEventFrom = domAPI.dispatchEventFrom;
 
 var pointerEventTypes = require('./core.js').pointerEventTypes;
 var pointers = require('./current.js').pointers;
@@ -10,16 +9,10 @@ var pointerPool = require('./pointer-pool.js');
 var getPointerObject = pointerPool.getPointerObject;
 var releasePointerObject = pointerPool.releasePointerObject;
 
+var getPath = require('./utils.js').getPath;
+
 var pointersInfo = {};
 
-function getPath(element) {
-  var path = [];
-  while (element !== null) {
-    path.push(element);
-    element = element.parentElement;
-  }
-  return path;
-}
 
 function start(e) {
   var touches = e.changedTouches;
