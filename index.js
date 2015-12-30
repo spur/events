@@ -1,4 +1,4 @@
-var core = require('./core.js');
+var pointers = require('./current.js').pointers;
 var domAPI = require('./dom-api.js');
 
 if (window.PointerEvent) {
@@ -9,7 +9,7 @@ if (window.PointerEvent) {
 }
 
 module.exports = {
-  pointers: core.pointers,
+  pointers: pointers,
   addListener: domAPI.addListener,
   removeListener: domAPI.removeListener
 };

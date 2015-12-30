@@ -28,12 +28,12 @@ PointerEvent.prototype.initFromTouch = function (event, touch, type) {
   return this;
 }
 
-var hoverMode = false;
-
 window.addEventListener('touchstart', function (e) {
   e.preventDefault();
-  var hasListener = domAPI.hasListener(pointerEventTypes.down);
 
+  hover.start(e);
+
+  var hasListener = domAPI.hasListener(pointerEventTypes.down);
   var touches = e.changedTouches;
   var pointerObject = getPointerObject();
   var pointerEvent = pointerObject.event;
@@ -47,18 +47,12 @@ window.addEventListener('touchstart', function (e) {
     }
   }
   releasePointerObject(pointerObject);
-
-  if (domAPI.hasListener(pointerEventTypes.enter) || domAPI.hasListener(pointerEventTypes.leave)) {
-    hover.start(e);
-    hoverMode = true;
-  } else {
-    hoverMode = false;
-  }
 }, true);
 
 window.addEventListener('touchmove', function (e) {
-  var hasListener = domAPI.hasListener(pointerEventTypes.move);
+  hover.move(e);
 
+  var hasListener = domAPI.hasListener(pointerEventTypes.move);
   var touches = e.changedTouches;
   var pointerObject = getPointerObject();
   var pointerEvent = pointerObject.event;
@@ -72,15 +66,12 @@ window.addEventListener('touchmove', function (e) {
     }
   }
   releasePointerObject(pointerObject);
-
-  if (hoverMode) {
-    hover.move(e);
-  }
 }, true);
 
 window.addEventListener('touchend', function (e) {
-  var hasListener = domAPI.hasListener(pointerEventTypes.up);
+  hover.end(e);
 
+  var hasListener = domAPI.hasListener(pointerEventTypes.up);
   var touches = e.changedTouches;
   var pointerObject = getPointerObject();
   var pointerEvent = pointerObject.event;
@@ -94,15 +85,10 @@ window.addEventListener('touchend', function (e) {
     }
   }
   releasePointerObject(pointerObject);
-
-  if (hoverMode) {
-    hover.end(e);
-  }
 }, true);
 
 window.addEventListener('touchcancel', function (e) {
   var hasListener = domAPI.hasListener(pointerEventTypes.cancel);
-
   var touches = e.changedTouches;
   var pointerObject = getPointerObject();
   var pointerEvent = pointerObject.event;
@@ -117,7 +103,5 @@ window.addEventListener('touchcancel', function (e) {
   }
   releasePointerObject(pointerObject);
 
-  if (hoverMode) {
-    hover.end(e);
-  }
+  hover.end(e);
 }, true);
