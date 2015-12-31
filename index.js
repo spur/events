@@ -1,11 +1,11 @@
-var pointers = require('./current.js').pointers;
-var domAPI = require('./dom-api.js');
+var pointers = require('./src/current.js').pointers;
+var domAPI = require('./src/dom-api.js');
 
 if (window.PointerEvent) {
-  require('./pointer.js');
+  require('./src/pointer.js');
 } else {
-  require('./touch.js');
-  require('./mouse.js');
+  require('./src/touch.js');
+  require('./src/mouse.js');
 }
 
 module.exports = {

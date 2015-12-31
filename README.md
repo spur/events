@@ -1,10 +1,10 @@
-# PointerEvents
+# Spur Events
 Cross-browser &amp; cross-platform event system based on the PointerEvent API.
 This event system follows (as much as we could) the events logic of the w3c specifications (http://www.w3.org/TR/pointerevents/). The main difference lies in the event object.
 
 ## Usage
 ```javascript
-var PointerEvents = require('pointer-events');
+var PointerEvents = require('spur-events');
 var addListener = PointerEvents.addListener;
 var removeListener = PointerEvents.removeListener;
 
@@ -46,7 +46,7 @@ function onPointerEnter(e) {
 ## Advanced Usage
 In order to use prototype methods as listener, like with React JS, you can provide the listener with a specific context.
 ```javascript
-import { addListener, removeListener } from 'pointer-events'
+import { addListener, removeListener } from 'spur-events'
 
 class PointerTest extend React.Component {
     constructor(props) {
