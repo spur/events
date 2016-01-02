@@ -1,5 +1,3 @@
-var PointerEvent = require('./pointer-event.js');
-
 var domAPI = require('./dom-api.js');
 var dispatchEvent = domAPI.dispatchEvent;
 var hasListener = domAPI.hasListener;
@@ -21,17 +19,6 @@ var events = [
   'pointerover',
   'pointercancel'
 ];
-
-PointerEvent.prototype.initFromPointer = function (event) {
-  this.pointerId = event.pointerId;
-  this.pointerType = event.pointerType;
-  this.x = event.clientX;
-  this.y = event.clientY;
-  this.target = event.target;
-  this.originalEvent = event;
-  this.type = event.type;
-  return this;
-}
 
 function handleNativePointer(e) {
   if (!hasListener(e.type)) { return; }

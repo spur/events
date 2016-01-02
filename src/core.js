@@ -11,6 +11,8 @@ var POINTER_OVER = 'pointerover';
 var POINTER_LEAVE = 'pointerleave';
 var POINTER_OUT = 'pointerout';
 
+var MOUSE_IDENTIFIER = 'mouse-pointer-identifier';
+
 var pointerTypes = {
   mouse: 'mouse',
   pen: 'pen',
@@ -29,6 +31,7 @@ var pointerEventTypes = {
 };
 
 module.exports = {
+  mouseIdentifier: MOUSE_IDENTIFIER,
   pointerTypes: pointerTypes,
   pointerEventTypes: pointerEventTypes
 };

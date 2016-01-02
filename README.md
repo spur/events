@@ -1,6 +1,5 @@
 # Spur Events
-Cross-browser &amp; cross-platform event system based on the PointerEvent API.
-This event system follows (as much as we could) the events logic of the w3c specifications (http://www.w3.org/TR/pointerevents/). The main difference lies in the event object.
+Cross-browser &amp; cross-platform event system based on the PointerEvent API defined by the w3c specifications (http://www.w3.org/TR/pointerevents/). This library supports every major browsers (Chrome, Safari, Edge, Firefox) on every major platforms (Windows, MacOSX, Linux, Android, iOS).
 
 ## Usage
 ```javascript
@@ -9,7 +8,7 @@ var addListener = PointerEvents.addListener;
 var removeListener = PointerEvents.removeListener;
 
 function onPointerEnter(e) {
-    console.log(e.target, e.x, e.y);
+    console.log(e.target, e.clientX, e.clientY);
 }
 
 function mount(someDOMNode) {
@@ -22,16 +21,26 @@ function unmount(someDOMNode) {
 ```
 
 ## Event object
-In its current state, the event object contains these properties:
+For an accurate properties description, please read the specifications of the w3c for Pointer Events.
 ```javascript
 Event: {
-    pointerId; // unique identifier for each pointer
-    pointerType; // 'mouse', 'touch' or 'pen'
-    x; // clientX
-    y; // clientY
-    type; // 'pointerdown', 'pointerup', 'pointermove' ...
-    target; // DOM node target
-    originalEvent; // original event that was used to generate this object
+    pointerId,
+    pointerType, // 'mouse', 'touch' or 'pen'
+    width, // we use the 'radiusX' value for touch events. 0 for mouse events
+    height, // we use the 'radiusY' value for touch events. 0 for mouse events
+    pressure, // we use the 'force' value for touch events. 1 for mouse events
+    tiltX, // 0 if the browser doesn't support Pointer Event natively
+    tiltY, // 0 if the browser doesn't support Pointer Event natively
+    isPrimary,
+
+    clientX,
+    clientY,
+    screenX,
+    screenY,
+    type, // 'pointerdown', 'pointerup', 'pointermove' ...
+    target;  // DOM node target
+
+    originalEvent // original event that was used to generate this object
 }
 ```
 
@@ -43,10 +52,12 @@ function onPointerEnter(e) {
 }
 ```
 
+Note that the `stopPropagation` method only stops the propagation of the events throughout our system. The native browser events are not impacted. In order to do so, you can call the `stopPropagation` method of the event `originalEvent` property.
+
 ## Advanced Usage
 In order to use prototype methods as listener, like with React JS, you can provide the listener with a specific context.
 ```javascript
-import { addListener, removeListener } from 'spur-events'
+import { addListener, removeListener } from 'spur-events';
 
 class PointerTest extend React.Component {
     constructor(props) {
@@ -55,7 +66,7 @@ class PointerTest extend React.Component {
     }
 
     onPointerEnter (e) {
-        console.log(this.property, e.target, e.x, e.y); // 'this' is the PointerTest class instance.
+        console.log(this.property, e.target, e.clientX, e.clientY); // 'this' is the PointerTest class instance.
     }
 
     componentDidMount () {
@@ -92,15 +103,15 @@ Firefox and Chrome are currently developing the PointerEvent API (https://www.ch
 - pointerout
 
 ## Supported browsers:
- - Chrome (Window, MacOS X and Android)
+ - Chrome (Window, Linux, MacOS X and Android)
  - Safari (MacOS X and iOS)
- - Firefox (Window, MacOS X)
+ - Firefox (Window, Linux, MacOS X)
  - Edge
  - IE9+
 
 
 ## Quirks
-To avoid the simulation of mouse events on Touch devices, we call the `preventDefault` method on the `touchstart` event. This prevent you from using `click` events.
+To avoid the simulation of mouse events on Touch devices, we call the `preventDefault` method on the `touchstart` event. This prevent you from using `click` events. We are currently looking for another way to avoid the event simulation. We might instead simulate the `click` with our system.
 
 ## Future
 We plan on supporting listening on the capture phase. At the moment, only listening on the bubbling phase is possible.

@@ -1,5 +1,6 @@
 var core = require('./core.js');
 var mouseType = core.pointerTypes.mouse;
+var MOUSE_IDENTIFIER = core.mouseIdentifier;
 var pointerEventTypes = core.pointerEventTypes;
 
 var domAPI = require('./dom-api.js');
@@ -16,11 +17,7 @@ var addPointer = currentPointers.addPointer;
 var updatePointer = currentPointers.updatePointer;
 var removePointer = currentPointers.removePointer;
 
-var PointerEvent = require('./pointer-event.js');
-
 var getPath = require('./utils.js').getPath;
-
-var MOUSE_IDENTIFIER = 'mouse-pointer-identifier';
 
 var enteringElement = null;
 var enteringPath = [];
@@ -28,17 +25,6 @@ var enteringIndex;
 var leavingElement = null;
 var leavingPath = [];
 var leavingIndex;
-
-PointerEvent.prototype.initFromMouse = function (event, type) {
-  this.pointerId = MOUSE_IDENTIFIER;
-  this.pointerType = mouseType;
-  this.x = event.clientX;
-  this.y = event.clientY;
-  this.target = event.target;
-  this.originalEvent = event;
-  this.type = type;
-  return this;
-}
 
 function handleEvent(e, pointerEventType) {
   if (!hasListener(pointerEventType)) { return }
@@ -96,6 +82,9 @@ function handleEnterEvent(e) {
 }
 
 window.addEventListener('mousedown', function (e) {
+  console.log(e)
+  e.stopPropagation()
+  console.log(e)
   addPointer(MOUSE_IDENTIFIER, mouseType, e.clientX, e.clientY, e.target);
   handleEvent(e, pointerEventTypes.down);
 }, true);
