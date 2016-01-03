@@ -1,7 +1,11 @@
 var pointerEventTypes = require('./core.js').pointerEventTypes;
+var getPath = require('./utils.js').getPath;
 var releasePointerObject = require('./pointer-pool.js').releasePointerObject;
 
 var ATTRIBUTE_NAME = 'data-pointer-id';
+var WINDOW_NODE_ID = 'window-node';
+var DOCUMENT_NODE_ID = 'document-node';
+
 var idIncrement = 1;
 var listeners = {};
 for (var key in pointerEventTypes) {
@@ -13,14 +17,16 @@ function hasListener(eventType) {
   return listeners[eventType].count > 0;
 }
 
-function dispatchEventOnElement(element, typeMap, event) {
-  var id = element.getAttribute(ATTRIBUTE_NAME);
+function dispatchEventOnElement(element, typeMap, event, capturePhase, noPhase) {
+  var id = getDOMNodeId(element);
   var entry = id && typeMap.map[id];
   if (entry) {
     var registeredListeners = entry.listeners;
     for (var i = 0, len = registeredListeners.length; i < len; i += 1) {
       var listenerEntry = registeredListeners[i];
-      listenerEntry.listener.call(listenerEntry.context || element, event);
+      if (noPhase || capturePhase === listenerEntry.capture) {
+        listenerEntry.listener.call(listenerEntry.context || element, event);
+      }
     }
   }
 }
@@ -28,23 +34,30 @@ function dispatchEventOnElement(element, typeMap, event) {
 function dispatchEventOn(event) {
   var typeMap = listeners[event.type];
   var element = event.target;
-  dispatchEventOnElement(element, typeMap, event);
+  dispatchEventOnElement(element, typeMap, event, false, true);
 }
 
 function dispatchEvent(event) {
-  event.propagationStopped = false;
-
   var typeMap = listeners[event.type];
-  var element = event.target;
-  while (element !== null) {
-    dispatchEventOnElement(element, typeMap, event);
+  var path = getPath(event.target);
 
-    if (event.propagationStopped) { break; }
-    element = element.parentElement;
+  event._propagationStopped = false;
+  for (var i = path.length - 1; i >= 0; i -= 1) { // capture phase
+    var element = path[i];
+    dispatchEventOnElement(element, typeMap, event, true);
+    if (event._propagationStopped) { return; }
+  }
+
+  for (var i = 0; i < path.length; i += 1) { // bubble phase
+    var element = path[i];
+    dispatchEventOnElement(path[i], typeMap, event, false);
+    if (event._propagationStopped) { return; }
   }
 }
 
 function getDOMNodeId(element) {
+  if (element === window) { return WINDOW_NODE_ID; }
+  if (element === document) { return DOCUMENT_NODE_ID; }
   var id = element.getAttribute(ATTRIBUTE_NAME);
   if (!id) {
     id = idIncrement;
@@ -54,63 +67,122 @@ function getDOMNodeId(element) {
   return id;
 }
 
-var addListener = function (element, type, listener, options) {
+function getTypeEntry(element, type, create) {
   var typeMap = listeners[type];
+  if (!typeMap) { return console.warn('unsupported event type', type); }
   var id = getDOMNodeId(element);
   var typeEntry = typeMap.map[id];
   if (!typeEntry) {
-    typeEntry = typeMap.map[id] = { element: element, listeners: [] };
+    typeEntry = typeMap.map[id] = { element: element, listeners: [], ids: {} };
+    typeMap.count += 1;
+  }
+  return typeEntry;
+}
+
+var addListener = function (element, type, listener, options) {
+  var typeMap = listeners[type];
+  if (!typeMap) { return console.warn('unsupported event type', type); }
+  var id = getDOMNodeId(element);
+  var typeEntry = typeMap.map[id];
+  if (!typeEntry) {
+    typeEntry = typeMap.map[id] = { element: element, listeners: [], ids: {} };
     typeMap.count += 1;
   }
 
   options = options || {};
-  typeEntry.listeners.push({ listener: listener, context: options.context });
+  var listenerEntry = { listener: listener, context: options.context, capture: options.capture || false };
+  typeEntry.listeners.push(listenerEntry);
+  if (options.hasOwnProperty('id')) {
+    typeEntry.ids[options.id] = listenerEntry;
+  }
 };
 
-var removeListener = function (element, type, listener) {
+
+var removeListener = function (element, type, listener, capture) {
   var typeMap = listeners[type];
+  if (!typeMap) { return; }
+
   var id = getDOMNodeId(element);
   var typeEntry = typeMap.map[id];
-  if (!typeEntry) { return console.error('unregistered element', element, type); }
+  if (!typeEntry) { return; }
+
+  var capturePhase = capture || false;
   var registeredListeners = typeEntry.listeners;
 
   var listenerIndex = -1;
+  var newListenerList = [];
   for (var i = 0; i < registeredListeners.length; i += 1) {
-    if (registeredListeners[i].listener === listener) {
-      listenerIndex = i;
-      break;
+    var listenerEntry = registeredListeners[i];
+    if ((listenerEntry.listener !== listener) || (listenerEntry.capture !== capturePhase)) {
+      newListenerList.push(listenerEntry);
     }
   }
 
-  if (listenerIndex === -1) { return console.error('unregistered listener', element, type); }
-  registeredListeners.splice(listenerIndex, 1);
+  if (newListenerList.length === 0) {
+    delete typeMap.map[id];
+    typeMap.count -= 1;
+  } else {
+    typeEntry.listeners = newListenerList;
+  }
+};
 
-  if (registeredListeners.length === 0) {
+
+var removeListenerById = function (element, type, listenerId) {
+  var typeMap = listeners[type];
+  if (!typeMap) { return; }
+
+  var id = getDOMNodeId(element);
+  var typeEntry = typeMap.map[id];
+  if (!typeEntry) { return; }
+
+  var listenerEntry = typeEntry.ids[listenerId];
+  if (!listenerEntry) { return; }
+
+  var entryIndex = typeEntry.listeners.indexOf(listenerEntry);
+  if (entryIndex === -1) { return; }
+
+  typeEntry.listeners.splice(entryIndex, 1);
+  if (typeEntry.listeners.length === 0) {
     delete typeMap.map[id];
     typeMap.count -= 1;
   }
 };
 
-// EventTarget.prototype.addListener = function (type, listener, options) {
-//   addListener(this, type, listener, options);
-// };
+var removeAllListeners = function (element, type) {
+  var typeMap = listeners[type];
+  if (!typeMap) { return; }
 
-// EventTarget.prototype.removeListener = function (type, listener) {
-//   removeListener(this, type, listener);
-// };
+  var id = getDOMNodeId(element);
+  var typeEntry = typeMap.map[id];
+  if (!typeEntry) { return; }
 
-var addListenerById = function (element, type, id, listener) {
-
+  delete typeMap.map[id];
+  typeMap.count -= 1;
 };
 
-var removeListenerById = function (element, type, id) {
+var dispatch = function (pointerEvent) {
+  if (!pointerEvent.type) {
+    throw new Error('InvalidStateError, you must specify a valid event type');
+  }
 
+  if (!listeners[pointerEvent.type]) {
+    throw new Error('NotSupportedError, ' + pointerEvent.type + ' is not a supported pointer event type.');
+  }
+
+  if (pointerEvent.type === pointerEventTypes.enter || pointerEvent.type === pointerEventTypes.leave) {
+    dispatchEventOn(pointerEvent);
+  } else {
+    dispatchEvent(pointerEvent);
+  }
 };
 
 export {
   hasListener,
+  dispatch,
   dispatchEvent,
   dispatchEventOn,
   addListener,
-  removeListener
+  removeListener,
+  removeListenerById,
+  removeAllListeners
 }

@@ -2,8 +2,8 @@ var core = require('./core.js');
 var pointerTypes = core.pointerTypes;
 var MOUSE_IDENTIFIER = core.mouseIdentifier;
 
-function PointerEvent() {
-  this.pointerId = null;
+function PointerEvent(type) {
+  this.pointerId = 0;
   this.pointerType = '';
   this.width = 0;
   this.height = 0;
@@ -12,17 +12,17 @@ function PointerEvent() {
   this.tiltY = 0;
   this.isPrimary = false;
 
-  this.clientX = null;
-  this.clientY = null;
-  this.screenX = null;
-  this.screenY = null;
-  this.type = null;
+  this.clientX = 0;
+  this.clientY = 0;
+  this.screenX = 0;
+  this.screenY = 0;
+  this.type = type;
   this.target = null;
 
   this.originalEvent = null;
 
   // internal
-  this.propagationStopped = false;
+  this._propagationStopped = false;
 }
 
 PointerEvent.prototype.preventDefault = function () {
@@ -30,11 +30,11 @@ PointerEvent.prototype.preventDefault = function () {
 };
 
 PointerEvent.prototype.stopPropagation = function () {
-  this.propagationStopped = true;
+  this._propagationStopped = true;
 };
 
 
-PointerEvent.prototype.initFromMouse = function (event, type) {
+PointerEvent.prototype._initFromMouse = function (event, type) {
   this.pointerId = MOUSE_IDENTIFIER;
   this.pointerType = pointerTypes.mouse;
   this.width = 0;
@@ -55,7 +55,7 @@ PointerEvent.prototype.initFromMouse = function (event, type) {
   return this;
 }
 
-PointerEvent.prototype.initFromTouch = function (event, touch, type, isPrimary) {
+PointerEvent.prototype._initFromTouch = function (event, touch, type, isPrimary) {
   this.pointerId = touch.identifier;
   this.pointerType = pointerTypes.touch;
   this.width = touch.radiusX || touch.webkitRadiusX || 0;
@@ -76,7 +76,7 @@ PointerEvent.prototype.initFromTouch = function (event, touch, type, isPrimary) 
   return this;
 }
 
-PointerEvent.prototype.initFromPointer = function (event) {
+PointerEvent.prototype._initFromPointer = function (event) {
   this.pointerId = event.pointerId;
   this.pointerType = event.pointerType;
   this.width = event.width;

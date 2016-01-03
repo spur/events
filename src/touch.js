@@ -34,7 +34,7 @@ window.addEventListener('touchstart', function (e) {
     addPointer(touch.identifier, touchType, touch.clientX, touch.clientY, touch.target);
 
     if (hasListener) {
-      pointerEvent.initFromTouch(e, touch, pointerEventTypes.down, touch.identifier === primaryId);
+      pointerEvent._initFromTouch(e, touch, pointerEventTypes.down, touch.identifier === primaryId);
       dispatchEvent(pointerEvent);
     }
   }
@@ -53,7 +53,7 @@ window.addEventListener('touchmove', function (e) {
     updatePointer(touch.identifier, touch.clientX, touch.clientY, touch.target);
 
     if (hasListener) {
-      pointerEvent.initFromTouch(e, touch, pointerEventTypes.move, touch.identifier === primaryId);
+      pointerEvent._initFromTouch(e, touch, pointerEventTypes.move, touch.identifier === primaryId);
       dispatchEvent(pointerEvent);
     }
   }
@@ -72,7 +72,7 @@ window.addEventListener('touchend', function (e) {
     removePointer(touch.identifier);
 
     if (hasListener) {
-      pointerEvent.initFromTouch(e, touch, pointerEventTypes.up, touch.identifier === primaryId);
+      pointerEvent._initFromTouch(e, touch, pointerEventTypes.up, touch.identifier === primaryId);
       dispatchEvent(pointerEvent);
     }
   }
@@ -90,7 +90,7 @@ window.addEventListener('touchcancel', function (e) {
     removePointer(touch.identifier);
 
     if (hasListener) {
-      pointerEvent.initFromTouch(e, touch, pointerEventTypes.cancel, touch.identifier === primaryId);
+      pointerEvent._initFromTouch(e, touch, pointerEventTypes.cancel, touch.identifier === primaryId);
       dispatchEvent(pointerEvent);
     }
   }

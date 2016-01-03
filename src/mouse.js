@@ -29,7 +29,7 @@ var leavingIndex;
 function handleEvent(e, pointerEventType) {
   if (!hasListener(pointerEventType)) { return }
   var pointerObject = getPointerObject();
-  pointerObject.event.initFromMouse(e, pointerEventType);
+  pointerObject.event._initFromMouse(e, pointerEventType);
   dispatchEvent(pointerObject.event);
   releasePointerObject(pointerObject);
 }
@@ -58,7 +58,7 @@ function handleLeaveEvent(e)  {
   updateTargets(e.relatedTarget, e.target);
 
   var pointerObject = getPointerObject();
-  pointerObject.event.initFromMouse(e, pointerEventTypes.leave);
+  pointerObject.event._initFromMouse(e, pointerEventTypes.leave);
   for (var i = 0; i < leavingIndex; i += 1) {
     var element = leavingPath[i];
     pointerObject.event.target = element;
@@ -72,7 +72,7 @@ function handleEnterEvent(e) {
   updateTargets(e.target, e.relatedTarget);
 
   var pointerObject = getPointerObject();
-  pointerObject.event.initFromMouse(e, pointerEventTypes.enter);
+  pointerObject.event._initFromMouse(e, pointerEventTypes.enter);
   for (var i = 0; i < enteringIndex; i += 1) {
     var element = enteringPath[i];
     pointerObject.event.target = element;
@@ -82,9 +82,6 @@ function handleEnterEvent(e) {
 }
 
 window.addEventListener('mousedown', function (e) {
-  console.log(e)
-  e.stopPropagation()
-  console.log(e)
   addPointer(MOUSE_IDENTIFIER, mouseType, e.clientX, e.clientY, e.target);
   handleEvent(e, pointerEventTypes.down);
 }, true);

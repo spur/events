@@ -4,7 +4,6 @@ var poolSize = 0;
 
 function createPoolEntry(pointerEvent) {
   poolSize += 1;
-  console.log('PointerEvent pool size', poolSize);
   return {
     event: pointerEvent || new PointerEvent(),
     next: null

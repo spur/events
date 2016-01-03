@@ -2,8 +2,9 @@ function getPath(element) {
   var path = [];
   while (element !== null) {
     path.push(element);
-    element = element.parentElement;
+    element = element.parentNode;
   }
+  path.push(window);
   return path;
 }
 

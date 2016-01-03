@@ -23,7 +23,7 @@ var events = [
 function handleNativePointer(e) {
   if (!hasListener(e.type)) { return; }
   var pointerObject = getPointerObject();
-  pointerObject.event.initFromPointer(e);
+  pointerObject.event._initFromPointer(e);
   dispatchEvent(pointerObject.event);
   releasePointerObject(pointerObject);
 }
