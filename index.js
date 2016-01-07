@@ -1,4 +1,4 @@
-var pointers = require('./src/current.js').pointers;
+var downPointers = require('./src/current.js').downPointers;
 var domAPI = require('./src/dom-api.js');
 var CustomPointerEvent = require('./src/pointer-event.js');
 
@@ -10,7 +10,7 @@ if (window.PointerEvent) {
 }
 
 module.exports = {
-  pointers: pointers,
+  downPointers: downPointers,
   PointerEvent: CustomPointerEvent,
   addListener: domAPI.addListener,
   removeListener: domAPI.removeListener,
