@@ -34,5 +34,6 @@ module.exports = {
   pointers: pointers,
   addPointer,
   updatePointer,
-  removePointer
+  removePointer,
+  touchPrimaryId: null
 };

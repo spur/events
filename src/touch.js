@@ -19,9 +19,7 @@ var removePointer = currentPointers.removePointer;
 var primaryId = null;
 
 window.addEventListener('touchstart', function (e) {
-  e.preventDefault();
-
-  primaryId = e.touches[0].identifier;
+  primaryId = currentPointers.touchPrimaryId = e.touches[0].identifier;
 
   hover.start(e, primaryId);
 
@@ -61,7 +59,8 @@ window.addEventListener('touchmove', function (e) {
 }, true);
 
 window.addEventListener('touchend', function (e) {
-  hover.end(e);
+  primaryId = currentPointers.touchPrimaryId = e.touches.length && e.touches[0].identifier;
+  hover.end(e, primaryId);
 
   var hasListener = domAPI.hasListener(pointerEventTypes.up);
   var touches = e.changedTouches;
@@ -80,8 +79,10 @@ window.addEventListener('touchend', function (e) {
 }, true);
 
 window.addEventListener('touchcancel', function (e) {
+  primaryId = currentPointers.touchPrimaryId = e.touches.length && e.touches[0].identifier;
+  hover.end(e, primaryId);
+
   var hasListener = domAPI.hasListener(pointerEventTypes.cancel);
-  primaryId = e.touches[0].identifier;
   var touches = e.changedTouches;
   var pointerObject = getPointerObject();
   var pointerEvent = pointerObject.event;
@@ -95,6 +96,4 @@ window.addEventListener('touchcancel', function (e) {
     }
   }
   releasePointerObject(pointerObject);
-
-  hover.end(e, primaryId);
 }, true);

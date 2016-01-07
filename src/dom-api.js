@@ -20,13 +20,13 @@ function hasListener(eventType) {
 function dispatchEventOnElement(element, typeMap, event, capturePhase, noPhase) {
   var id = getDOMNodeId(element);
   var entry = id && typeMap.map[id];
-  if (entry) {
-    var registeredListeners = entry.listeners;
-    for (var i = 0, len = registeredListeners.length; i < len; i += 1) {
-      var listenerEntry = registeredListeners[i];
-      if (noPhase || capturePhase === listenerEntry.capture) {
-        listenerEntry.listener.call(listenerEntry.context || element, event);
-      }
+  if (!entry) { return; }
+
+  var registeredListeners = entry.listeners;
+  for (var i = 0, len = registeredListeners.length; i < len; i += 1) {
+    var listenerEntry = registeredListeners[i];
+    if (noPhase || capturePhase === listenerEntry.capture) {
+      listenerEntry.listener.call(listenerEntry.context || element, event);
     }
   }
 }
@@ -34,6 +34,7 @@ function dispatchEventOnElement(element, typeMap, event, capturePhase, noPhase) 
 function dispatchEventOn(event) {
   var typeMap = listeners[event.type];
   var element = event.target;
+  event.path = null;
   dispatchEventOnElement(element, typeMap, event, false, true);
 }
 
@@ -42,6 +43,8 @@ function dispatchEvent(event) {
   var path = getPath(event.target);
 
   event._propagationStopped = false;
+  event.path = path;
+
   for (var i = path.length - 1; i >= 0; i -= 1) { // capture phase
     var element = path[i];
     dispatchEventOnElement(element, typeMap, event, true);
@@ -55,11 +58,11 @@ function dispatchEvent(event) {
   }
 }
 
-function getDOMNodeId(element) {
+function getDOMNodeId(element, createIfNull) {
   if (element === window) { return WINDOW_NODE_ID; }
   if (element === document) { return DOCUMENT_NODE_ID; }
   var id = element.getAttribute(ATTRIBUTE_NAME);
-  if (!id) {
+  if (createIfNull && !id) {
     id = idIncrement;
     idIncrement += 1;
     element.setAttribute(ATTRIBUTE_NAME, id);
@@ -82,7 +85,7 @@ function getTypeEntry(element, type, create) {
 var addListener = function (element, type, listener, options) {
   var typeMap = listeners[type];
   if (!typeMap) { return console.warn('unsupported event type', type); }
-  var id = getDOMNodeId(element);
+  var id = getDOMNodeId(element, true);
   var typeEntry = typeMap.map[id];
   if (!typeEntry) {
     typeEntry = typeMap.map[id] = { element: element, listeners: [], ids: {} };

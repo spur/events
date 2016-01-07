@@ -145,9 +145,6 @@ Firefox and Chrome are currently developing the PointerEvent API (https://www.ch
 
 
 ## Quirks
-### preventDefault and click event
-To avoid the simulation of mouse events on Touch devices, we call the `preventDefault` method on the `touchstart` event. This prevent you from using `click` events. We are currently looking for another way to avoid the event simulation. We might instead simulate the `click` with our system.
-
 
 ### CSS touch-action
 The CSS `touch-action` property is not supported by this system.

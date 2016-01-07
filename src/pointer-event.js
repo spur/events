@@ -12,6 +12,8 @@ function PointerEvent(type) {
   this.tiltY = 0;
   this.isPrimary = false;
 
+  this.path = null;
+
   this.clientX = 0;
   this.clientY = 0;
   this.screenX = 0;
