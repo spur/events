@@ -179,13 +179,13 @@ var dispatch = function (pointerEvent) {
   }
 };
 
-export {
-  hasListener,
-  dispatch,
-  dispatchEvent,
-  dispatchEventOn,
-  addListener,
-  removeListener,
-  removeListenerById,
-  removeAllListeners
-}
+module.exports = {
+  hasListener: hasListener,
+  dispatch: dispatch,
+  dispatchEvent: dispatchEvent,
+  dispatchEventOn: dispatchEventOn,
+  addListener: addListener,
+  removeListener: removeListener,
+  removeListenerById: removeListenerById,
+  removeAllListeners: removeAllListeners
+};
