@@ -15,6 +15,9 @@ var getPath = require('./utils.js').getPath;
 var pointersInfo = {};
 var primaryId = null;
 
+var MINIMUM_DISTANCE_BETWEEN_MOVES = 15;
+var MAXIMUM_TIME_BETWEEN_MOVES = 50;
+
 function start(e, primaryPointerId) {
   primaryId = primaryPointerId;
   var hasOverListener = hasListener(pointerEventTypes.over);
@@ -115,7 +118,9 @@ function move(e) {
     var touch = touches[i];
     var pointerInfo = pointersInfo[touch.identifier];
 
-    if (Math.abs(touch.clientX - pointerInfo.x) > 15 || Math.abs(touch.clientY - pointerInfo.y) > 15 || e.timeStamp - pointerInfo.timeStamp > 50) {
+    if (Math.abs(touch.clientX - pointerInfo.x) > MINIMUM_DISTANCE_BETWEEN_MOVES ||
+      Math.abs(touch.clientY - pointerInfo.y) > MINIMUM_DISTANCE_BETWEEN_MOVES ||
+      e.timeStamp - pointerInfo.timeStamp > MAXIMUM_TIME_BETWEEN_MOVES) {
       pointerInfo.x = touch.clientX;
       pointerInfo.y = touch.clientY;
       updateTarget(pointerInfo, e, touch, touch.identifier === primaryId);
