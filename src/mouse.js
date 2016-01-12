@@ -13,6 +13,7 @@ var getPointerObject = pointerPool.getPointerObject;
 var releasePointerObject = pointerPool.releasePointerObject;
 
 var currentPointers = require('./current.js');
+var pointers = currentPointers.downPointers.pointers;
 var addPointer = currentPointers.addPointer;
 var updatePointer = currentPointers.updatePointer;
 var removePointer = currentPointers.removePointer;
@@ -41,7 +42,7 @@ function isEventEmulated(e) {
     return e.sourceCapabilities.firesTouchEvents;
   }
 
-  let primaryTouch = currentPointers.pointers[currentPointers.touchPrimaryId];
+  var primaryTouch = pointers[pointers.touchPrimaryId];
   if (!primaryTouch) {
     return false;
   }
@@ -52,7 +53,7 @@ function isEventEmulated(e) {
 function updateTargets(enterTarget, leaveTarget) {
   if (leavingElement !== leaveTarget) {
     leavingElement = leaveTarget;
-    leavingPath = getPath(leavingElement);
+    leavingPath = leavingElement === enteringElement ? enteringPath : getPath(leavingElement);
   }
 
   if (enteringElement !== enterTarget) {
@@ -60,24 +61,21 @@ function updateTargets(enterTarget, leaveTarget) {
     enteringPath = getPath(enteringElement);
   }
 
-  leavingIndex = leavingPath.length - 1;
-  enteringIndex = enteringPath.length - 1;
-
-  while (enteringIndex > 1 || leavingIndex > 1) {
-    if (leavingPath[leavingIndex] !== enteringPath[enteringIndex]) { break; }
-    enteringIndex -= 1;
-    leavingIndex -= 1;
+  enteringIndex = enteringPath.length;
+  leavingIndex = leavingPath.length;
+  for (; enteringIndex >= 0 && leavingIndex >= 0; enteringIndex -= 1, leavingIndex -= 1) {
+    if (enteringPath[enteringIndex] !== leavingPath[leavingIndex]) { break; }
   }
 }
+
 
 function handleLeaveEvent(e)  {
   updateTargets(e.relatedTarget, e.target);
 
   var pointerObject = getPointerObject();
   var event = pointerObject.event._initFromMouse(e, pointerEventTypes.leave);
-  for (var i = 0; i < leavingIndex; i += 1) {
-    var element = leavingPath[i];
-    event.target = element;
+  for (var i = 0; i <= leavingIndex; i += 1) {
+    event.target = leavingPath[i];
     dispatchEventOn(event);
   }
 
@@ -89,9 +87,8 @@ function handleEnterEvent(e) {
 
   var pointerObject = getPointerObject();
   var event = pointerObject.event._initFromMouse(e, pointerEventTypes.enter);
-  for (var i = 0; i < enteringIndex; i += 1) {
-    var element = enteringPath[i];
-    event.target = element;
+  for (var i = 0; i <= enteringIndex; i += 1) {
+    event.target = enteringPath[i];
     dispatchEventOn(event)
   }
 
