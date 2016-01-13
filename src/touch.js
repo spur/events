@@ -19,8 +19,12 @@ var removePointer = currentPointers.removePointer;
 var primaryId = null;
 
 window.addEventListener('touchstart', function (e) {
-  primaryId = currentPointers.touchPrimaryId = e.touches[0].identifier;
-
+  var firstTouch = e.touches[0];
+  primaryId = firstTouch.identifier;
+  var primaryTouch = currentPointers.primaryTouch;
+  primaryTouch.x = firstTouch.clientX;
+  primaryTouch.y = firstTouch.clientY;
+  primaryTouch.timeStamp = e.timeStamp;
   hover.start(e, primaryId);
 
   var hasListener = domAPI.hasListener(pointerEventTypes.down);
@@ -50,6 +54,15 @@ window.addEventListener('touchmove', function (e) {
     var touch = touches[i];
     updatePointer(touch.identifier, touch.clientX, touch.clientY, touch.target);
 
+    var isPrimary = touch.identifier === primaryId;
+
+    if (isPrimary) {
+      var primaryTouch = currentPointers.primaryTouch;
+      primaryTouch.x = touch.clientX;
+      primaryTouch.y = touch.clientY;
+      primaryTouch.timeStamp = e.timeStamp;
+    }
+
     if (hasListener) {
       pointerEvent._initFromTouch(e, touch, pointerEventTypes.move, touch.identifier === primaryId);
       dispatchEvent(pointerEvent);
@@ -59,7 +72,14 @@ window.addEventListener('touchmove', function (e) {
 }, true);
 
 window.addEventListener('touchend', function (e) {
-  primaryId = currentPointers.touchPrimaryId = e.touches.length && e.touches[0].identifier;
+  var firstTouch = e.touches[0];
+  if (firstTouch) {
+    primaryId = firstTouch.identifier;
+    var primaryTouch = currentPointers.primaryTouch;
+    primaryTouch.x = firstTouch.clientX;
+    primaryTouch.y = firstTouch.clientY;
+    primaryTouch.timeStamp = e.timeStamp;
+  }
   hover.end(e, primaryId);
 
   var hasListener = domAPI.hasListener(pointerEventTypes.up);
@@ -79,7 +99,14 @@ window.addEventListener('touchend', function (e) {
 }, true);
 
 window.addEventListener('touchcancel', function (e) {
-  primaryId = currentPointers.touchPrimaryId = e.touches.length && e.touches[0].identifier;
+  var firstTouch = e.touches[0];
+  if (firstTouch) {
+    primaryId = firstTouch.identifier;
+    var primaryTouch = currentPointers.primaryTouch;
+    primaryTouch.x = firstTouch.clientX;
+    primaryTouch.y = firstTouch.clientY;
+    primaryTouch.timeStamp = e.timeStamp;
+  }
   hover.end(e, primaryId);
 
   var hasListener = domAPI.hasListener(pointerEventTypes.cancel);

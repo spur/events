@@ -13,7 +13,6 @@ var getPointerObject = pointerPool.getPointerObject;
 var releasePointerObject = pointerPool.releasePointerObject;
 
 var currentPointers = require('./current.js');
-var pointers = currentPointers.downPointers.pointers;
 var addPointer = currentPointers.addPointer;
 var updatePointer = currentPointers.updatePointer;
 var removePointer = currentPointers.removePointer;
@@ -21,6 +20,7 @@ var removePointer = currentPointers.removePointer;
 var getPath = require('./utils.js').getPath;
 
 var SIMULATED_DISTANCE = 10;
+var SIMULATED_MAX_TIME = 500;
 
 var enteringElement = null;
 var enteringPath = [];
@@ -38,16 +38,16 @@ function handleEvent(e, pointerEventType) {
 }
 
 function isEventEmulated(e) {
-  if (e.sourceCapabilities) {
-    return e.sourceCapabilities.firesTouchEvents;
-  }
+  var primaryTouch = currentPointers.primaryTouch;
+  if (primaryTouch.timeStamp === 0) { return false; } // no touch events;
 
-  var primaryTouch = pointers[pointers.touchPrimaryId];
-  if (!primaryTouch) {
-    return false;
-  }
+  if (e.timeStamp === 0) { return true; } // safari's simulated mouse events have a 0 timestamp.
 
-  return (Math.abs(primaryTouch.clientX - e.clientX) <= SIMULATED_DISTANCE) && (Math.abs(primaryTouch.clientY - e.clientY) <= SIMULATED_DISTANCE);
+  if (e.sourceCapabilities) { return e.sourceCapabilities.firesTouchEvents; } // chrome
+
+  // ignore the mouse event if there was a touch around the same time and coordinates.
+  if (e.timeStamp - primaryTouch.timeStamp > SIMULATED_MAX_TIME) { return false; }
+  return (Math.abs(primaryTouch.x - e.clientX) <= SIMULATED_DISTANCE) && (Math.abs(primaryTouch.y - e.clientY) <= SIMULATED_DISTANCE);
 }
 
 function updateTargets(enterTarget, leaveTarget) {

@@ -2,10 +2,14 @@ div {
   box-sizing: border-box;
 }
 
+html {
+  touch-action: none;
+}
+
 html, body {
   height: 100%;
   width: 100%;
-  position: fixed;
+  overflow: hidden;
 }
 
 body {
@@ -13,7 +17,6 @@ body {
   margin: 0;
   -webkit-user-select: none;
   user-select: none;
-  overflow: hidden;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, sans-serif;
   font-size: 12px;
 }

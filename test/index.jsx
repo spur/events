@@ -36,20 +36,24 @@ var PointerTest = React.createClass({
   },
   componentDidMount: function () {
 
-    var start;
-    function checkPropagationtime() {
-      console.log('propagation time', (performance.now() - start))
-    }
+    // var start;
+    // function checkPropagationtime() {
+    //   console.log('propagation time', (performance.now() - start))
+    // }
 
-    addListener(this.refs.lastLevel, 'pointerdown', function () {
-      start = performance.now();
-      console.log('hit last level')
-    }, { context: this, capture: true });
+    // addListener(this.refs.lastLevel, 'pointerdown', function () {
+    //   start = performance.now();
+    //   console.log('hit last level')
+    // }, { context: this, capture: true });
 
+    addListener(window, 'pointermove', function (e) {
+      e.preventDefault();
+    });
+    
     addListener(this.refs.firstLevel, 'pointerout', this.onPointer, { context: this });
     addListener(this.refs.firstLevel, 'pointerover', this.onPointer, { context: this });
     addListener(this.refs.firstLevel, 'pointerup', this.onPointer, { context: this });
-    addListener(this.refs.firstLevel, 'pointerdown', checkPropagationtime, { context: this });
+    addListener(this.refs.firstLevel, 'pointerdown', this.onPointer, { context: this });
 
     addListener(this.refs.firstLevel, 'pointerenter', this.onPointerEnter);
     addListener(this.refs.firstLevel, 'pointerleave', this.onPointerLeave);
@@ -59,7 +63,7 @@ var PointerTest = React.createClass({
 
     addListener(this.refs.secondLevelA, 'pointerenter', this.onPointerEnter, {  id: 'test' });
     addListener(this.refs.secondLevelA, 'pointerleave', this.onPointerLeave);
-    addListener(window, 'pointerdown', this.onPointerDown);
+    // addListener(window, 'pointerdown', this.onPointerDown);
     this.refs.firstLevel.addEventListener('click', function () { console.log('click') });
 
     // var event = new PointerEvent('pointerdown');

@@ -5,15 +5,16 @@ var releasePointerObject = pointerPool.releasePointerObject;
 var pointers = {};
 var pointerObjects = {};
 var downPointers = { pointers: pointers, count: 0 };
+var primaryTouch = { x: 0, y: 0, timeStamp: 0 };
 
 function addPointer(pointerId, pointerType, x, y, target) {
   var pointerObject = getPointerObject();
-  var event = pointerObject.event;
-  event.pointerType = pointerType;
-  event.clientX = x;
-  event.clientY = y;
-  event.target = target;
-  pointers[pointerId] = event;
+  var pointerEvent = pointerObject.event;
+  pointerEvent.pointerType = pointerType;
+  pointerEvent.clientX = x;
+  pointerEvent.clientY = y;
+  pointerEvent.target = target;
+  pointers[pointerId] = pointerEvent;
   pointerObjects[pointerId] = pointerObject;
   downPointers.count += 1;
 }
@@ -38,5 +39,5 @@ module.exports = {
   addPointer: addPointer,
   updatePointer: updatePointer,
   removePointer: removePointer,
-  touchPrimaryId: null
+  primaryTouch: primaryTouch
 };
