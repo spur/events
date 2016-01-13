@@ -11,7 +11,7 @@ var POINTER_OVER = 'pointerover';
 var POINTER_LEAVE = 'pointerleave';
 var POINTER_OUT = 'pointerout';
 
-var MOUSE_IDENTIFIER = 'mouse-pointer-identifier';
+var MOUSE_IDENTIFIER = '0';
 
 var pointerTypes = {
   mouse: 'mouse',

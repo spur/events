@@ -6,7 +6,8 @@ var removeListener = SpurEvents.removeListener;
 var removeListenerById = SpurEvents.removeListenerById;
 var removeAllListeners = SpurEvents.removeAllListeners;
 var PointerEvent = SpurEvents.PointerEvent;
-var dispatch = SpurEvents.dispatch;
+var SpurEvent = SpurEvents.SpurEvent;
+var dispatchEvent = SpurEvents.dispatchEvent;
 
 require('./styles.less');
 
@@ -48,6 +49,7 @@ var PointerTest = React.createClass({
 
     addListener(window, 'pointermove', function (e) {
       e.preventDefault();
+      console.log('pointermove', e.target);
     });
     
     addListener(this.refs.firstLevel, 'pointerout', this.onPointer, { context: this });
@@ -63,13 +65,24 @@ var PointerTest = React.createClass({
 
     addListener(this.refs.secondLevelA, 'pointerenter', this.onPointerEnter, {  id: 'test' });
     addListener(this.refs.secondLevelA, 'pointerleave', this.onPointerLeave);
+
     // addListener(window, 'pointerdown', this.onPointerDown);
     this.refs.firstLevel.addEventListener('click', function () { console.log('click') });
+
+    addListener(this.refs.firstLevel, 'tap', function (e) {
+      console.log('tap!', e);
+    });
+
+    var event = new SpurEvent('tap');
+    event.target = this.refs.secondLevelB;
+    event.bubbles = true;
+    dispatchEvent(event);
+
 
     // var event = new PointerEvent('pointerdown');
     // // event.target = this.refs.firstLevel;
 
-    // dispatch(event);
+    // dispatchEvent(event);
 
     // removeAllListeners(this.refs.secondLevelA, 'pointerenter');
 

@@ -1,4 +1,4 @@
-var PointerEvent = require('./pointer-event.js');
+var PointerEvent = require('./events.js').PointerEvent;
 var INITIAL_LIST_SIZE = 5;
 var poolSize = 0;
 

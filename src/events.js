@@ -2,7 +2,49 @@ var core = require('./core.js');
 var pointerTypes = core.pointerTypes;
 var MOUSE_IDENTIFIER = core.mouseIdentifier;
 
+function SpurEvent(type) {
+  this.clientX = 0;
+  this.clientY = 0;
+  this.screenX = 0;
+  this.screenY = 0;
+  this.pageX = 0;
+  this.pageY = 0;
+  this.type = type;
+  this.timeStamp = 0;
+
+  this.target = null;
+  this.currentTarget = null;
+  this.relatedTarget = null;
+
+  this.path = null;
+  this.bubbles = true;
+  this.eventPhase = Event.NONE;
+  this.defaultPrevented = false;
+
+  this.propagationStopped = false;
+  this.immediatePropagationStopped = false;
+}
+
+SpurEvent.prototype.preventDefault = function () {
+  this.defaultPrevented = true;
+
+  if (this.originalEvent) {
+    this.originalEvent.preventDefault();
+  }
+};
+
+SpurEvent.prototype.stopPropagation = function () {
+  this.propagationStopped = true;
+};
+
+SpurEvent.prototype.stopImmediatePropagation = function () {
+  this.immediatePropagationStopped = true;
+  this.stopPropagation();
+};
+
+
 function PointerEvent(type) {
+  SpurEvent.call(this, type);
   this.pointerId = 0;
   this.pointerType = '';
   this.width = 0;
@@ -12,29 +54,17 @@ function PointerEvent(type) {
   this.tiltY = 0;
   this.isPrimary = false;
 
-  this.path = null;
-
-  this.clientX = 0;
-  this.clientY = 0;
-  this.screenX = 0;
-  this.screenY = 0;
-  this.type = type;
-  this.target = null;
-
   this.originalEvent = null;
-
-  // internal
-  this._propagationStopped = false;
 }
 
-PointerEvent.prototype.preventDefault = function () {
-  this.originalEvent.preventDefault();
-};
-
-PointerEvent.prototype.stopPropagation = function () {
-  this._propagationStopped = true;
-};
-
+PointerEvent.prototype = Object.create(SpurEvent.prototype, {
+  constructor: {
+    value: SpurEvent,
+    enumerable: false,
+    writable: true,
+    configurable: true
+  }
+});
 
 PointerEvent.prototype._initFromMouse = function (event, type) {
   this.pointerId = MOUSE_IDENTIFIER;
@@ -50,15 +80,18 @@ PointerEvent.prototype._initFromMouse = function (event, type) {
   this.clientY = event.clientY;
   this.screenX = event.screenX;
   this.screenY = event.screenY;
+  this.pageX = event.pageX;
+  this.pageY = event.pageY;
   this.type = type;
   this.target = event.target;
+  this.relatedTarget = event.relatedTarget;
 
   this.originalEvent = event;
   return this;
 }
 
 PointerEvent.prototype._initFromTouch = function (event, touch, type, isPrimary) {
-  this.pointerId = touch.identifier;
+  this.pointerId = touch.identifier + 1; // 0 is the mouse
   this.pointerType = pointerTypes.touch;
   this.width = touch.radiusX || touch.webkitRadiusX || 0;
   this.height = touch.radiusY || touch.webkitRadiusY || 0;
@@ -71,6 +104,8 @@ PointerEvent.prototype._initFromTouch = function (event, touch, type, isPrimary)
   this.clientY = touch.clientY;
   this.screenX = touch.screenX;
   this.screenY = touch.screenY;
+  this.pageX = touch.pageX;
+  this.pageY = touch.pageY;
   this.type = type;
   this.target = touch.target;
 
@@ -92,11 +127,17 @@ PointerEvent.prototype._initFromPointer = function (event) {
   this.clientY = event.clientY;
   this.screenX = event.screenX;
   this.screenY = event.screenY;
+  this.pageX = event.pageX;
+  this.pageY = event.pageY;
   this.type = event.type;
   this.target = event.target;
+  this.relatedTarget = event.relatedTarget;
 
   this.originalEvent = event;
   return this;
 }
 
-module.exports = PointerEvent;
+module.exports = {
+  PointerEvent: PointerEvent,
+  SpurEvent: SpurEvent
+};

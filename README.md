@@ -77,11 +77,56 @@ Will dispatch the event throughout the DOM Model.
 - `NotSupportedError` if the event type is not one of the supported pointer events.
 
 
-### PointerEvent object
-For an accurate properties description, please read the specifications of the w3c for Pointer Events.
+### Event objects
+For an accurate properties description, please read the specifications of the w3c for Events and PointerEvents.
+
+#### SpurEvent
+The basic event that can be used to create custom event.
+
 ```javascript
-PointerEvent: {
-    pointerId,
+SpurEvent {
+    type, // 'pointerdown', 'tap', 'drop' ...
+    timeStamp,
+    target,
+    currentTarget,
+    relatedTarget,
+
+    clientX,
+    clientY,
+    screenX,
+    screenY,
+    pageX,
+    pageY,
+
+    path,
+    bubbles,
+    eventPhase,
+    defaultPrevented,
+
+    propagationStopped, // whether 'stopPropagation' has been called
+    immediatePropagationStopped // whether 'stopImmediatePropagation' has been called
+}
+```
+
+The `SpurEvent` object also provides the `stopPropagation`, `stopImmediatePropagation` and `preventDefault` methods.
+```javascript
+function onPointerEnter(e) {
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    e.preventDefault();
+}
+```
+
+Note that the `stopPropagation` and `stopImmediatePropagation` methods only stop the propagation of the events throughout our system. The native browser events are not impacted.
+The `stopImmediatePropagation` method implicitly calls the `stopPropagation` and will stop the general propagation of the event through the DOM.
+`preventDefault` calls the native `preventDefault` method on the event object hold by the `originalEvent` property.
+
+
+#### PointerEvent
+The PointerEvent class.
+```javascript
+PointerEvent : SpurEvent {
+    pointerId, // an id to identify the pointer
     pointerType, // 'mouse', 'touch' or 'pen'
     width, // we use the 'radiusX' value for touch events. 0 for mouse events
     height, // we use the 'radiusY' value for touch events. 0 for mouse events
@@ -90,27 +135,9 @@ PointerEvent: {
     tiltY, // 0 if the browser doesn't support Pointer Event natively
     isPrimary,
 
-    clientX,
-    clientY,
-    screenX,
-    screenY,
-    type, // 'pointerdown', 'pointerup', 'pointermove' ...
-    target;  // DOM node target
-
     originalEvent // original event that was used to generate this object
 }
 ```
-
-The Event object also provides the `stopPropagation` and `preventDefault` methods.
-```javascript
-function onPointerEnter(e) {
-    e.stopPropagation();
-    e.preventDefault();
-}
-```
-
-Note that the `stopPropagation` method only stops the propagation of the events throughout our system. The native browser events are not impacted. In order to do so, you can call the `stopPropagation` method of the event `originalEvent` property.
-
 
 
 ## Note on performance
@@ -175,9 +202,62 @@ class PointerTest extend React.Component {
 ```
 
 ### removeListenerById
-TODO
+```javascript
+import { addListener, removeListener } from 'spur-events';
 
-### Event creation and dispatch.
-TODO
+class PointerTest extend React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    componentDidMount () {
+        addListener(this.refs.someDOMNode, 'pointerenter', (e) = {
+            // do something
+        }, { context: this, id: 'myPointerEnter' });
+    }
+
+    componentWillUnmount () {
+        removeListenerById(this.refs.someDOMNode, 'pointerenter', 'myPointerEnter');
+    }
+}
+```
+
+### Custom Event creation and dispatch.
+```javascript
+import { addListener, removeListener, SpurEvent, dispatchEvent } from 'spur-events';
+
+class PointerTest extend React.Component {
+    componentDidMount () {
+        addListener(window, 'tap', function (e) {
+            // e.target => this.refs.someDOMNode
+            // e.currentTarget => window
+            // ...
+        }, { context: this });
+
+        let event = new SpurEvent('tap');
+        event.target = this.refs.someDOMNode;
+        dispatchEvent(event);
+    }
+}
+```
+
+### PointerEvent creation and dispatch.
+```javascript
+import { addListener, removeListener, PointerEvent, dispatchEvent } from 'spur-events';
+
+class PointerTest extend React.Component {
+    componentDidMount () {
+        addListener(window, 'pointerup', function (e) {
+            // ...
+        }, { context: this });
+
+        let event = new PointerEvent('pointerup');
+        event.target = this.refs.someDOMNode;
+        dispatchEvent(event);
+    }
+}
+```
+
+Note that a PointerEvent with  a `pointerenter` or `pointerleave` type will not bubble.
 
 

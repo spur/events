@@ -1,6 +1,6 @@
 var downPointers = require('./src/current.js').downPointers;
 var domAPI = require('./src/dom-api.js');
-var CustomPointerEvent = require('./src/pointer-event.js');
+var events = require('./src/events.js');
 
 if (window.PointerEvent) {
   require('./src/pointer.js');
@@ -11,7 +11,8 @@ if (window.PointerEvent) {
 
 module.exports = {
   downPointers: downPointers,
-  PointerEvent: CustomPointerEvent,
+  PointerEvent: events.PointerEvent,
+  SpurEvent: events.SpurEvent,
   addListener: domAPI.addListener,
   removeListener: domAPI.removeListener,
   removeListenerById: domAPI.removeListenerById,

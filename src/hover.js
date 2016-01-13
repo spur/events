@@ -66,6 +66,7 @@ function updateTarget(pointerInfo, e, touch, isPrimary) {
   if (hasListener(pointerEventTypes.out)) {
     pointerEvent._initFromTouch(e, touch, pointerEventTypes.out, isPrimary);
     pointerEvent.target = pointerInfo.target;
+    pointerEvent.relatedTarget = null;
     dispatchEvent(pointerEvent);
   }
 
@@ -80,6 +81,7 @@ function updateTarget(pointerInfo, e, touch, isPrimary) {
 
   if (hasListener(pointerEventTypes.leave)) {
     pointerEvent._initFromTouch(e, touch, pointerEventTypes.leave, isPrimary);
+    pointerEvent.relatedTarget = target;
     for (var i = 0; i <= oldPathIndex; i += 1) {
       var element = oldPath[i];
       pointerEvent.target = element;
@@ -90,11 +92,13 @@ function updateTarget(pointerInfo, e, touch, isPrimary) {
   if (hasListener(pointerEventTypes.over)) {
     pointerEvent._initFromTouch(e, touch, pointerEventTypes.over, isPrimary);
     pointerEvent.target = target;
+    pointerEvent.relatedTarget = null;
     dispatchEvent(pointerEvent);
   }
 
   if (hasListener(pointerEventTypes.enter)) {
     pointerEvent._initFromTouch(e, touch, pointerEventTypes.enter, isPrimary);
+    pointerEvent.relatedTarget = pointerInfo.target;
     for (var i = 0; i <= newPathIndex; i += 1) {
       var element = newPath[i];
       pointerEvent.target = element;
@@ -108,24 +112,27 @@ function updateTarget(pointerInfo, e, touch, isPrimary) {
 }
 
 function move(e) {
-  if (!hasListener(pointerEventTypes.enter) &&
-    !hasListener(pointerEventTypes.leave) &&
-    !hasListener(pointerEventTypes.over) &&
-    !hasListener(pointerEventTypes.out)) { return; }
-  var touches = e.changedTouches;
-  for (var i = 0; i < touches.length; i += 1) {
-    var touch = touches[i];
-    var pointerInfo = pointersInfo[touch.identifier];
+  if (hasListener(pointerEventTypes.enter) ||
+    hasListener(pointerEventTypes.leave) ||
+    hasListener(pointerEventTypes.over) ||
+    hasListener(pointerEventTypes.out)) {
+    var touches = e.changedTouches;
+    for (var i = 0; i < touches.length; i += 1) {
+      var touch = touches[i];
+      var pointerInfo = pointersInfo[touch.identifier];
 
-    if ((Math.abs(touch.clientX - pointerInfo.x) > MINIMUM_DISTANCE_BETWEEN_MOVES) ||
-      (Math.abs(touch.clientY - pointerInfo.y) > MINIMUM_DISTANCE_BETWEEN_MOVES) ||
-      (e.timeStamp - pointerInfo.timeStamp > MAXIMUM_TIME_BETWEEN_MOVES)) {
-      pointerInfo.x = touch.clientX;
-      pointerInfo.y = touch.clientY;
-      updateTarget(pointerInfo, e, touch, touch.identifier === primaryId);
+      if ((Math.abs(touch.clientX - pointerInfo.x) > MINIMUM_DISTANCE_BETWEEN_MOVES) ||
+        (Math.abs(touch.clientY - pointerInfo.y) > MINIMUM_DISTANCE_BETWEEN_MOVES) ||
+        (e.timeStamp - pointerInfo.timeStamp > MAXIMUM_TIME_BETWEEN_MOVES)) {
+        pointerInfo.x = touch.clientX;
+        pointerInfo.y = touch.clientY;
+        updateTarget(pointerInfo, e, touch, touch.identifier === primaryId);
+      }
+      pointerInfo.timeStamp = e.timeStamp;
     }
-    pointerInfo.timeStamp = e.timeStamp;
   }
+
+  return pointersInfo;
 }
 
 function end(e, primaryPointerId) {

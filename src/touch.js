@@ -44,7 +44,7 @@ window.addEventListener('touchstart', function (e) {
 }, true);
 
 window.addEventListener('touchmove', function (e) {
-  hover.move(e);
+  var pointersInfo = hover.move(e);
 
   var hasListener = domAPI.hasListener(pointerEventTypes.move);
   var touches = e.changedTouches;
@@ -65,6 +65,9 @@ window.addEventListener('touchmove', function (e) {
 
     if (hasListener) {
       pointerEvent._initFromTouch(e, touch, pointerEventTypes.move, touch.identifier === primaryId);
+      var pointerInfo = pointersInfo[touch.identifier];
+      pointerEvent.target = pointerInfo.target;
+      pointerEvent.path = pointerInfo.path;
       dispatchEvent(pointerEvent);
     }
   }

@@ -22,40 +22,66 @@ function dispatchEventOnElement(element, typeMap, event, capturePhase, noPhase) 
   var entry = id && typeMap.map[id];
   if (!entry) { return; }
 
+  event.currentTarget = element;
   var registeredListeners = entry.listeners;
   for (var i = 0, len = registeredListeners.length; i < len; i += 1) {
     var listenerEntry = registeredListeners[i];
     if (noPhase || capturePhase === listenerEntry.capture) {
       listenerEntry.listener.call(listenerEntry.context || element, event);
     }
+    if (event.immediatePropagationStopped) { break; }
   }
+}
+
+function resetEvent(event) {
+  event.path = null;
+  event.timeStamp = 0;
+  event.currentTarget = null;
+  event.eventPhase = Event.NONE;
 }
 
 function dispatchEventOn(event) {
   var typeMap = listeners[event.type];
   var element = event.target;
   event.path = null;
+  event.timeStamp = event.timeStamp || Date.now();
+  event.eventPhase = Event.NONE;
   dispatchEventOnElement(element, typeMap, event, false, true);
+  
+  resetEvent(event);
 }
 
 function dispatchEvent(event) {
   var typeMap = listeners[event.type];
-  var path = getPath(event.target);
+  var path = event.path || getPath(event.target);
 
-  event._propagationStopped = false;
+  event.propagationStopped = false;
+  event.immediatePropagationStopped = false;
+  event.defaultPrevented = false;
   event.path = path;
+  event.timeStamp = Date.now();
 
-  for (var i = path.length - 1; i >= 0; i -= 1) { // capture phase
+  event.eventPhase = Event.CAPTURING_PHASE;
+  for (var i = path.length - 1; i > 0; i -= 1) {
     var element = path[i];
     dispatchEventOnElement(element, typeMap, event, true);
-    if (event._propagationStopped) { return; }
+    if (event.propagationStopped) { return resetEvent(event); }
   }
 
-  for (var i = 0; i < path.length; i += 1) { // bubble phase
+  event.eventPhase = Event.AT_TARGET;
+  dispatchEventOnElement(event.target, typeMap, event, true);
+  dispatchEventOnElement(event.target, typeMap, event, false);
+
+  if (!event.bubbles) { return resetEvent(event); }
+
+  event.eventPhase = Event.BUBBLING_PHASE;
+  for (var i = 1; i < path.length; i += 1) {
     var element = path[i];
     dispatchEventOnElement(path[i], typeMap, event, false);
-    if (event._propagationStopped) { return; }
+    if (event.propagationStopped) { return resetEvent(event); }
   }
+
+  resetEvent(event);
 }
 
 function getDOMNodeId(element, createIfNull) {
@@ -72,7 +98,10 @@ function getDOMNodeId(element, createIfNull) {
 
 function getTypeEntry(element, type, create) {
   var typeMap = listeners[type];
-  if (!typeMap) { return console.warn('unsupported event type', type); }
+  if (!typeMap) {
+    typeMap = listeners[type] = { count: 0, map: {} };
+  }
+
   var id = getDOMNodeId(element);
   var typeEntry = typeMap.map[id];
   if (!typeEntry) {
@@ -84,7 +113,10 @@ function getTypeEntry(element, type, create) {
 
 var addListener = function (element, type, listener, options) {
   var typeMap = listeners[type];
-  if (!typeMap) { return console.warn('unsupported event type', type); }
+  if (!typeMap) {
+    typeMap = listeners[type] = { count: 0, map: {} };
+  }
+
   var id = getDOMNodeId(element, true);
   var typeEntry = typeMap.map[id];
   if (!typeEntry) {
@@ -168,9 +200,7 @@ var dispatch = function (pointerEvent) {
     throw new Error('InvalidStateError, you must specify a valid event type');
   }
 
-  if (!listeners[pointerEvent.type]) {
-    throw new Error('NotSupportedError, ' + pointerEvent.type + ' is not a supported pointer event type.');
-  }
+  if (!listeners[pointerEvent.type]) { return; }
 
   if (pointerEvent.type === pointerEventTypes.enter || pointerEvent.type === pointerEventTypes.leave) {
     dispatchEventOn(pointerEvent);
