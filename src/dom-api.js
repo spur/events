@@ -1,12 +1,8 @@
 var pointerEventTypes = require('./core.js').pointerEventTypes;
 var getPath = require('./utils.js').getPath;
 var releasePointerObject = require('./pointer-pool.js').releasePointerObject;
+var getDOMNodeId = require('spur-id').getDOMNodeId;
 
-var ATTRIBUTE_NAME = 'data-pointer-id';
-var WINDOW_NODE_ID = 'window-node';
-var DOCUMENT_NODE_ID = 'document-node';
-
-var idIncrement = 1;
 var listeners = {};
 for (var key in pointerEventTypes) {
   var type = pointerEventTypes[key];
@@ -82,18 +78,6 @@ function dispatchEvent(event) {
   }
 
   resetEvent(event);
-}
-
-function getDOMNodeId(element, createIfNull) {
-  if (element === window) { return WINDOW_NODE_ID; }
-  if (element === document) { return DOCUMENT_NODE_ID; }
-  var id = element.getAttribute(ATTRIBUTE_NAME);
-  if (createIfNull && !id) {
-    id = idIncrement;
-    idIncrement += 1;
-    element.setAttribute(ATTRIBUTE_NAME, id);
-  }
-  return id;
 }
 
 function getTypeEntry(element, type, create) {
