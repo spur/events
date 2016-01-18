@@ -50,7 +50,9 @@ Remove the listeners for the specified type from an EventTarget instance.
 - `target` (*Object*): the TargetEvent instance to remove the listener from.
 - `type` (*string*): The event type.
 - `listener` (*function*): The listener function.
-- `capture=false` (*boolean*): true if the listener to be removed listens on the capture phase.
+- `options` (*Object*):
+  - `context` (*Object*): the context listener was created with.
+  - `capture = false` (*boolean*): true if the listener to be removed listens on the capture phase.
 
 #### removeListenerById
 `removeListenerById(target, type, id)`
@@ -201,7 +203,7 @@ class PointerTest extend React.Component {
     }
 
     componentWillUnmount () {
-        removeListener(this.refs.someDOMNode, 'pointerenter', this.onPointerEnter);
+        removeListener(this.refs.someDOMNode, 'pointerenter', this.onPointerEnter, { context: this });
     }
 }
 ```

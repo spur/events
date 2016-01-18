@@ -117,7 +117,7 @@ var addListener = function (element, type, listener, options) {
 };
 
 
-var removeListener = function (element, type, listener, capture) {
+var removeListener = function (element, type, listener, options) {
   var typeMap = listeners[type];
   if (!typeMap) { return; }
 
@@ -125,14 +125,16 @@ var removeListener = function (element, type, listener, capture) {
   var typeEntry = typeMap.map[id];
   if (!typeEntry) { return; }
 
-  var capturePhase = capture || false;
+  options = options || {};
+  var capturePhase = options.capture || false;
+  var context = options.context;
   var registeredListeners = typeEntry.listeners;
 
   var listenerIndex = -1;
   var newListenerList = [];
   for (var i = 0; i < registeredListeners.length; i += 1) {
     var listenerEntry = registeredListeners[i];
-    if ((listenerEntry.listener !== listener) || (listenerEntry.capture !== capturePhase)) {
+    if ((listenerEntry.listener !== listener) || (listenerEntry.capture !== capturePhase) || (listenerEntry.context !== context)) {
       newListenerList.push(listenerEntry);
     }
   }
