@@ -91,7 +91,7 @@ PointerEvent.prototype._initFromMouse = function (event, type) {
 }
 
 PointerEvent.prototype._initFromTouch = function (event, touch, type, isPrimary) {
-  this.pointerId = touch.identifier + 1; // 0 is the mouse
+  this.pointerId = touch.identifier;
   this.pointerType = pointerTypes.touch;
   this.width = touch.radiusX || touch.webkitRadiusX || 0;
   this.height = touch.radiusY || touch.webkitRadiusY || 0;
