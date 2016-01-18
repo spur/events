@@ -29,9 +29,9 @@ function start(e, primaryPointerId) {
   for (var i = 0; i < touches.length; i += 1) {
     var touch = touches[i];
     var isPrimary = touch.identifier === primaryId;
+    pointerEvent._initFromTouch(e, touch, pointerEventTypes.over, isPrimary);
 
     if (hasOverListener) {
-      pointerEvent._initFromTouch(e, touch, pointerEventTypes.over, isPrimary);
       dispatchEvent(pointerEvent);
     }
 
