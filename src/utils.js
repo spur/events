@@ -4,7 +4,10 @@ function getPath(element) {
     path.push(element);
     element = element.parentNode;
   }
-  path.push(window);
+
+  if (element !== window) {
+  	path.push(window);
+  }
   return path;
 }
 

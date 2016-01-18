@@ -38,7 +38,7 @@ function resetEvent(event) {
 
 function dispatchEventOn(event) {
   var typeMap = listeners[event.type];
-  var element = event.target;
+  var element = event.target || document;
   event.path = null;
   event.timeStamp = event.timeStamp || Date.now();
   event.eventPhase = Event.NONE;
@@ -49,6 +49,7 @@ function dispatchEventOn(event) {
 
 function dispatchEvent(event) {
   var typeMap = listeners[event.type];
+  event.target = event.target || document;
   var path = event.path || getPath(event.target);
 
   event.propagationStopped = false;
@@ -64,9 +65,11 @@ function dispatchEvent(event) {
     if (event.propagationStopped) { return resetEvent(event); }
   }
 
-  event.eventPhase = Event.AT_TARGET;
-  dispatchEventOnElement(event.target, typeMap, event, true);
-  dispatchEventOnElement(event.target, typeMap, event, false);
+  if (path.length > 1) {
+    event.eventPhase = Event.AT_TARGET;
+    dispatchEventOnElement(event.target, typeMap, event, true);
+    dispatchEventOnElement(event.target, typeMap, event, false);
+  }
 
   if (!event.bubbles) { return resetEvent(event); }
 

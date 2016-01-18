@@ -57,7 +57,6 @@ function start(e, primaryPointerId) {
 
 function updateTarget(pointerInfo, e, touch, isPrimary) {
   var target = document.elementFromPoint(pointerInfo.x, pointerInfo.y);
-  console.log('updateTarget', target.className)
   if (!target || target === pointerInfo.target) { return; }
 
   var pointerObject = getPointerObject();
