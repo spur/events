@@ -83,7 +83,7 @@ function updateTarget(pointerInfo, e, touch, isPrimary) {
     pointerEvent.relatedTarget = target;
     for (var i = 0; i <= oldPathIndex; i += 1) {
       var element = oldPath[i];
-      pointerEvent.target = element;
+      pointerEvent.target = pointerEvent.currentTarget = element;
       dispatchEventOn(pointerEvent);
     }
   }
@@ -100,7 +100,7 @@ function updateTarget(pointerInfo, e, touch, isPrimary) {
     pointerEvent.relatedTarget = pointerInfo.target;
     for (var i = 0; i <= newPathIndex; i += 1) {
       var element = newPath[i];
-      pointerEvent.target = element;
+      pointerEvent.target = pointerEvent.currentTarget = element;
       dispatchEventOn(pointerEvent);
     }
   }

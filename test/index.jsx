@@ -66,6 +66,9 @@ var PointerTest = React.createClass({
     addListener(this.refs.secondLevelA, 'pointerenter', this.onPointerEnter, {  id: 'test' });
     addListener(this.refs.secondLevelA, 'pointerleave', this.onPointerLeave);
 
+    addListener(this.refs.lastLevel, 'pointerenter', this.onPointerEnter);
+    addListener(this.refs.lastLevel, 'pointerleave', this.onPointerLeave);
+
     // addListener(window, 'pointerdown', this.onPointerDown);
     this.refs.firstLevel.addEventListener('click', function () { console.log('click') });
 

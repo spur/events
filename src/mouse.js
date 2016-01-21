@@ -75,7 +75,7 @@ function handleLeaveEvent(e)  {
   var pointerObject = getPointerObject();
   var event = pointerObject.event._initFromMouse(e, pointerEventTypes.leave);
   for (var i = 0; i <= leavingIndex; i += 1) {
-    event.target = leavingPath[i];
+    event.target = event.currentTarget = leavingPath[i];
     dispatchEventOn(event);
   }
 
@@ -88,7 +88,7 @@ function handleEnterEvent(e) {
   var pointerObject = getPointerObject();
   var event = pointerObject.event._initFromMouse(e, pointerEventTypes.enter);
   for (var i = 0; i <= enteringIndex; i += 1) {
-    event.target = enteringPath[i];
+    event.target = event.currentTarget = enteringPath[i];
     dispatchEventOn(event)
   }
 
