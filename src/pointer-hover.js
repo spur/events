@@ -42,8 +42,7 @@ function handleLeaveEvent(e, eventInitMethod)  {
   var event = pointerObject.event[eventInitMethod](e, pointerEventTypes.leave);
   event.target = leavingPath[0];
   for (var i = 0; i <= leavingIndex; i += 1) {
-    event.currentTarget = leavingPath[i];
-    dispatchEventOn(event, event.currentTarget);
+    dispatchEventOn(event, leavingPath[i]);
   }
 
   releasePointerObject(pointerObject);
@@ -57,8 +56,7 @@ function handleEnterEvent(e, eventInitMethod) {
   var event = pointerObject.event[eventInitMethod](e, pointerEventTypes.enter);
   event.target = enteringPath[0];
   for (var i = 0; i <= enteringIndex; i += 1) {
-    event.currentTarget = enteringPath[i];
-    dispatchEventOn(event, event.currentTarget)
+    dispatchEventOn(event, enteringPath[i]);
   }
 
   releasePointerObject(pointerObject);

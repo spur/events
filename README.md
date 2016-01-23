@@ -1,5 +1,5 @@
 # Spur Events
-Cross-browser &amp; cross-platform event system based on the PointerEvent API defined by the w3c specifications (http://www.w3.org/TR/pointerevents/). This library supports every major browsers (Chrome, Safari, Edge, Firefox) on every major platforms (Windows, MacOSX, Linux, Android, iOS).
+Cross-browser & cross-platform event system based on the PointerEvent API defined by the w3c specifications (http://www.w3.org/TR/pointerevents/). This library supports every major browsers (Chrome, Safari, Edge, Firefox) on every major platforms (Windows, MacOSX, Linux, Android, iOS).
 
 This library provides you with 'touchenter', 'touchleave', 'touchover', 'touchout' events (here called 'pointerenter', 'pointerleave', 'pointerover' and 'pointerout') on touch devices.
 

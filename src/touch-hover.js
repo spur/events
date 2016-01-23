@@ -48,8 +48,7 @@ function start(e, primaryPointerId) {
       pointerEvent._initFromTouch(e, touch, pointerEventTypes.enter, isPrimary);
       pointerEvent.target = pointerInfo.path[0];
       for (var j = 0; j < pointerInfo.path.length; j += 1) {
-        pointerEvent.currentTarget = pointerInfo.path[j];
-        dispatchEventOn(pointerEvent, pointerEvent.currentTarget);
+        dispatchEventOn(pointerEvent, pointerInfo.path[j]);
       }
     }
   }
@@ -84,9 +83,7 @@ function updateTarget(pointerInfo, e, touch, isPrimary) {
     pointerEvent.relatedTarget = target;
     pointerEvent.target = oldPath[0];
     for (var i = 0; i <= oldPathIndex; i += 1) {
-      var element = oldPath[i];
-      pointerEvent.currentTarget = element;
-      dispatchEventOn(pointerEvent, element);
+      dispatchEventOn(pointerEvent, oldPath[i]);
     }
   }
 
@@ -102,9 +99,7 @@ function updateTarget(pointerInfo, e, touch, isPrimary) {
     pointerEvent.relatedTarget = pointerInfo.target;
     pointerEvent.target = newPath[0];
     for (var i = 0; i <= newPathIndex; i += 1) {
-      var element = newPath[i];
-      pointerEvent.currentTarget = element;
-      dispatchEventOn(pointerEvent, element);
+      dispatchEventOn(pointerEvent, newPath[i]);
     }
   }
 
@@ -160,8 +155,7 @@ function end(e, primaryPointerId) {
       pointerObject.event._initFromTouch(e, touch, pointerEventTypes.leave, isPrimary);
       pointerEvent.target = pointerInfo.path[0];
       for (var j = 0; j < pointerInfo.path.length; j += 1) {
-        pointerEvent.currentTarget = pointerInfo.path[j];
-        dispatchEventOn(pointerEvent, pointerEvent.currentTarget);
+        dispatchEventOn(pointerEvent, pointerInfo.path[j]);
       }
     }
 
