@@ -35,6 +35,6 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
-    "spur-id": "git+https://github.com/spur/spur-id.git"
+    "spur-id": "^0.1.0"
   }
 }
