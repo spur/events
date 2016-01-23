@@ -51,7 +51,7 @@ Remove the listeners for the specified type from an EventTarget instance.
 - `type` (*string*): The event type.
 - `listener` (*function*): The listener function.
 - `options` (*Object*):
-  - `context` (*Object*): the context listener was created with.
+  - `context` (*Object*): the context the listener was created with.
   - `capture = false` (*boolean*): true if the listener to be removed listens on the capture phase.
 
 #### removeListenerById
@@ -169,6 +169,7 @@ Firefox and Chrome are currently developing the PointerEvent API (https://www.ch
  - pointerleave
  - pointerover
  - pointerout
+ - pointercancel
 
 ## Supported browsers:
  - Chrome (Window, Linux, MacOS X and Android)
@@ -181,7 +182,7 @@ Firefox and Chrome are currently developing the PointerEvent API (https://www.ch
 ## Quirks
 
 ### CSS touch-action
-The CSS `touch-action` property is not supported by this system.
+The CSS `touch-action` property is not supported by this system. We advise to set it to `none` (`touch-action: none;`) to receive the native pointer events.
 
 ## Example
 ### React JS with ES6 example
