@@ -36,9 +36,9 @@ function resetEvent(event) {
   event.eventPhase = Event.NONE;
 }
 
-function dispatchEventOn(event) {
+function dispatchEventOn(event, target) {
   var typeMap = listeners[event.type];
-  var element = event.target || document;
+  var element = target || event.target || document;
   event.path = null;
   event.timeStamp = event.timeStamp || Date.now();
   event.eventPhase = Event.NONE;

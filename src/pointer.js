@@ -11,14 +11,12 @@ var addPointer = currentPointers.addPointer;
 var updatePointer = currentPointers.updatePointer;
 var removePointer = currentPointers.removePointer;
 
+var pointerHover = require('./pointer-hover.js');
+var handleEnterEvent = pointerHover.handleEnterEvent;
+var handleLeaveEvent = pointerHover.handleLeaveEvent;
 
-var events = [
-  'pointerenter',
-  'pointerleave',
-  'pointerout',
-  'pointerover',
-  'pointercancel'
-];
+var pointerEventTypes = require('./core.js').pointerEventTypes;
+
 
 function handleNativePointer(e) {
   if (!hasListener(e.type)) { return; }
@@ -43,6 +41,15 @@ window.addEventListener('pointerup', function (e) {
   handleNativePointer(e);
 }, true);
 
-for (var i = 0; i < events.length; i += 1) {
-  window.addEventListener(events[i], handleNativePointer, true);
-}
+window.addEventListener('pointercancel', handleNativePointer, true);
+
+window.addEventListener('pointerout', function (e) {
+  handleNativePointer(e, pointerEventTypes.out);
+  handleLeaveEvent(e, '_initFromPointer');
+}, true);
+
+window.addEventListener('pointerover', function (e) {
+  handleNativePointer(e, pointerEventTypes.over);
+  handleEnterEvent(e, '_initFromPointer');
+}, true);
+

@@ -13,12 +13,12 @@ require('./styles.less');
 
 var PointerTest = React.createClass({
   onPointerEnter: function (e) {
-    e.target.classList.add('hover');
-    console.log('enter', e.target.className)
+    e.currentTarget.classList.add('hover');
+    console.log('enter', e.currentTarget)
   },
   onPointerLeave: function (e) {
-    e.target.classList.remove('hover');
-    console.log('leave', e.target.className)
+    e.currentTarget.classList.remove('hover');
+    console.log('leave', e.currentTarget.className)
   },
   onPointerDown: function (e) {
     console.log('pointer down', e.target.className);
@@ -47,11 +47,28 @@ var PointerTest = React.createClass({
     //   console.log('hit last level')
     // }, { context: this, capture: true });
 
-    addListener(window, 'pointermove', function (e) {
-      e.preventDefault();
-      console.log('pointermove', e.target);
-    });
+    // addListener(window, 'pointermove', function (e) {
+    //   e.preventDefault();
+    //   console.log('pointermove', e.target);
+    // });
     
+    // this.refs.firstLevel.addEventListener('pointerout', this.onPointer);
+    // this.refs.firstLevel.addEventListener('pointerover', this.onPointer);
+    // this.refs.firstLevel.addEventListener('pointerup', this.onPointer);
+    // this.refs.firstLevel.addEventListener('pointerdown', this.onPointer);
+
+    // this.refs.firstLevel.addEventListener('pointerenter', this.onPointerEnter);
+    // this.refs.firstLevel.addEventListener('pointerleave', this.onPointerLeave);
+
+    // this.refs.secondLevelA.addEventListener('pointerenter', this.onPointerEnter);
+    // this.refs.secondLevelA.addEventListener('pointerleave', this.onPointerLeave);
+
+    // this.refs.secondLevelB.addEventListener('pointerenter', this.onPointerEnter);
+    // this.refs.secondLevelB.addEventListener('pointerleave', this.onPointerLeave);
+
+    // this.refs.lastLevel.addEventListener('pointerenter', this.onPointerEnter);
+    // this.refs.lastLevel.addEventListener('pointerleave', this.onPointerLeave);
+
     addListener(this.refs.firstLevel, 'pointerout', this.onPointer, { context: this });
     addListener(this.refs.firstLevel, 'pointerover', this.onPointer, { context: this });
     addListener(this.refs.firstLevel, 'pointerup', this.onPointer, { context: this });

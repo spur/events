@@ -5,7 +5,7 @@ var pointerEventTypes = core.pointerEventTypes;
 var domAPI = require('./dom-api.js');
 var dispatchEvent = domAPI.dispatchEvent;
 
-var hover = require('./hover.js');
+var hover = require('./touch-hover.js');
 
 var pointerPool = require('./pointer-pool.js');
 var getPointerObject = pointerPool.getPointerObject;

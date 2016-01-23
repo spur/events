@@ -46,9 +46,10 @@ function start(e, primaryPointerId) {
 
     if (hasEnterListener) {
       pointerEvent._initFromTouch(e, touch, pointerEventTypes.enter, isPrimary);
+      pointerEvent.target = pointerInfo.path[0];
       for (var j = 0; j < pointerInfo.path.length; j += 1) {
-        pointerEvent.target = pointerInfo.path[j];
-        dispatchEventOn(pointerEvent);
+        pointerEvent.currentTarget = pointerInfo.path[j];
+        dispatchEventOn(pointerEvent, pointerEvent.currentTarget);
       }
     }
   }
@@ -81,10 +82,11 @@ function updateTarget(pointerInfo, e, touch, isPrimary) {
   if (hasListener(pointerEventTypes.leave)) {
     pointerEvent._initFromTouch(e, touch, pointerEventTypes.leave, isPrimary);
     pointerEvent.relatedTarget = target;
+    pointerEvent.target = oldPath[0];
     for (var i = 0; i <= oldPathIndex; i += 1) {
       var element = oldPath[i];
-      pointerEvent.target = pointerEvent.currentTarget = element;
-      dispatchEventOn(pointerEvent);
+      pointerEvent.currentTarget = element;
+      dispatchEventOn(pointerEvent, element);
     }
   }
 
@@ -98,10 +100,11 @@ function updateTarget(pointerInfo, e, touch, isPrimary) {
   if (hasListener(pointerEventTypes.enter)) {
     pointerEvent._initFromTouch(e, touch, pointerEventTypes.enter, isPrimary);
     pointerEvent.relatedTarget = pointerInfo.target;
+    pointerEvent.target = newPath[0];
     for (var i = 0; i <= newPathIndex; i += 1) {
       var element = newPath[i];
-      pointerEvent.target = pointerEvent.currentTarget = element;
-      dispatchEventOn(pointerEvent);
+      pointerEvent.currentTarget = element;
+      dispatchEventOn(pointerEvent, element);
     }
   }
 
@@ -155,9 +158,10 @@ function end(e, primaryPointerId) {
 
     if (hasLeaveListener) {
       pointerObject.event._initFromTouch(e, touch, pointerEventTypes.leave, isPrimary);
+      pointerEvent.target = pointerInfo.path[0];
       for (var j = 0; j < pointerInfo.path.length; j += 1) {
-        pointerEvent.target = pointerInfo.path[j];
-        dispatchEventOn(pointerEvent);
+        pointerEvent.currentTarget = pointerInfo.path[j];
+        dispatchEventOn(pointerEvent, pointerEvent.currentTarget);
       }
     }
 

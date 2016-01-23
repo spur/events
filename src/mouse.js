@@ -5,7 +5,6 @@ var pointerEventTypes = core.pointerEventTypes;
 
 var domAPI = require('./dom-api.js');
 var dispatchEvent = domAPI.dispatchEvent;
-var dispatchEventOn = domAPI.dispatchEventOn;
 var hasListener = domAPI.hasListener;
 
 var pointerPool = require('./pointer-pool.js');
@@ -17,17 +16,12 @@ var addPointer = currentPointers.addPointer;
 var updatePointer = currentPointers.updatePointer;
 var removePointer = currentPointers.removePointer;
 
-var getPath = require('./utils.js').getPath;
+var pointerHover = require('./pointer-hover.js');
+var handleEnterEvent = pointerHover.handleEnterEvent;
+var handleLeaveEvent = pointerHover.handleLeaveEvent;
 
 var SIMULATED_DISTANCE = 10;
 var SIMULATED_MAX_TIME = 500;
-
-var enteringElement = null;
-var enteringPath = [];
-var enteringIndex;
-var leavingElement = null;
-var leavingPath = [];
-var leavingIndex;
 
 function handleEvent(e, pointerEventType) {
   if (!hasListener(pointerEventType)) { return }
@@ -48,51 +42,6 @@ function isEventEmulated(e) {
   // ignore the mouse event if there was a touch around the same time and coordinates.
   if (e.timeStamp - primaryTouch.timeStamp > SIMULATED_MAX_TIME) { return false; }
   return (Math.abs(primaryTouch.x - e.clientX) <= SIMULATED_DISTANCE) && (Math.abs(primaryTouch.y - e.clientY) <= SIMULATED_DISTANCE);
-}
-
-function updateTargets(enterTarget, leaveTarget) {
-  if (leavingElement !== leaveTarget) {
-    leavingElement = leaveTarget;
-    leavingPath = leavingElement === enteringElement ? enteringPath : getPath(leavingElement);
-  }
-
-  if (enteringElement !== enterTarget) {
-    enteringElement = enterTarget;
-    enteringPath = getPath(enteringElement);
-  }
-
-  enteringIndex = enteringPath.length;
-  leavingIndex = leavingPath.length;
-  for (; enteringIndex >= 0 && leavingIndex >= 0; enteringIndex -= 1, leavingIndex -= 1) {
-    if (enteringPath[enteringIndex] !== leavingPath[leavingIndex]) { break; }
-  }
-}
-
-
-function handleLeaveEvent(e)  {
-  updateTargets(e.relatedTarget, e.target);
-
-  var pointerObject = getPointerObject();
-  var event = pointerObject.event._initFromMouse(e, pointerEventTypes.leave);
-  for (var i = 0; i <= leavingIndex; i += 1) {
-    event.target = event.currentTarget = leavingPath[i];
-    dispatchEventOn(event);
-  }
-
-  releasePointerObject(pointerObject);
-}
-
-function handleEnterEvent(e) {
-  updateTargets(e.target, e.relatedTarget);
-
-  var pointerObject = getPointerObject();
-  var event = pointerObject.event._initFromMouse(e, pointerEventTypes.enter);
-  for (var i = 0; i <= enteringIndex; i += 1) {
-    event.target = event.currentTarget = enteringPath[i];
-    dispatchEventOn(event)
-  }
-
-  releasePointerObject(pointerObject);
 }
 
 window.addEventListener('mousedown', function (e) {
@@ -116,18 +65,12 @@ window.addEventListener('mouseup', function (e) {
 window.addEventListener('mouseout', function (e) {
   if (isEventEmulated(e)) { return; }
   handleEvent(e, pointerEventTypes.out);
-
-  if (hasListener(pointerEventTypes.leave)) {
-    handleLeaveEvent(e);
-  }
+  handleLeaveEvent(e, '_initFromMouse');
 }, true);
 
 window.addEventListener('mouseover', function (e) {
   if (isEventEmulated(e)) { return; }
   handleEvent(e, pointerEventTypes.over);
-
-  if (hasListener(pointerEventTypes.enter)) {
-    handleEnterEvent(e);
-  }
+  handleEnterEvent(e, '_initFromMouse');
 }, true);
 

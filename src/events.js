@@ -113,7 +113,7 @@ PointerEvent.prototype._initFromTouch = function (event, touch, type, isPrimary)
   return this;
 }
 
-PointerEvent.prototype._initFromPointer = function (event) {
+PointerEvent.prototype._initFromPointer = function (event, type) {
   this.pointerId = event.pointerId;
   this.pointerType = event.pointerType;
   this.width = event.width;
@@ -129,7 +129,7 @@ PointerEvent.prototype._initFromPointer = function (event) {
   this.screenY = event.screenY;
   this.pageX = event.pageX;
   this.pageY = event.pageY;
-  this.type = event.type;
+  this.type = type || event.type;
   this.target = event.target;
   this.relatedTarget = event.relatedTarget;
 
