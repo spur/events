@@ -105,6 +105,9 @@ SpurEvent {
     pageX,
     pageY,
 
+    button,
+    buttons,
+
     path,
     bubbles,
     eventPhase,
@@ -137,7 +140,7 @@ PointerEvent : SpurEvent {
     pointerType, // 'mouse', 'touch' or 'pen'
     width, // we use the 'radiusX' value for touch events. 0 for mouse events
     height, // we use the 'radiusY' value for touch events. 0 for mouse events
-    pressure, // we use the 'force' value for touch events. 1 for mouse events
+    pressure, // we use the 'force' value for mouse & touch events.
     tiltX, // 0 if the browser doesn't support Pointer Event natively
     tiltY, // 0 if the browser doesn't support Pointer Event natively
     isPrimary,

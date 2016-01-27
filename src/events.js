@@ -12,6 +12,9 @@ function SpurEvent(type) {
   this.type = type;
   this.timeStamp = 0;
 
+  this.buttons = 0;
+  this.button = -1;
+
   this.target = null;
   this.currentTarget = null;
   this.relatedTarget = null;
@@ -42,6 +45,40 @@ SpurEvent.prototype.stopImmediatePropagation = function () {
   this.stopPropagation();
 };
 
+SpurEvent.prototype.initFromMouseEvent = function (event) {
+  this.clientX = event.clientX;
+  this.clientY = event.clientY;
+  this.screenX = event.screenX;
+  this.screenY = event.screenY;
+  this.pageX = event.pageX;
+  this.pageY = event.pageY;
+  this.type = event.type;
+  this.target = event.target;
+  this.relatedTarget = event.relatedTarget;
+
+  this.button = event.button;
+  this.buttons = event.buttons;
+}
+
+SpurEvent.prototype.initFromTouchEvent = function (event, touch) {
+  touch = touch || event.touches[0];
+
+  this.clientX = touch.clientX;
+  this.clientY = touch.clientY;
+  this.screenX = touch.screenX;
+  this.screenY = touch.screenY;
+  this.pageX = touch.pageX;
+  this.pageY = touch.pageY;
+  this.target = touch.target;
+
+  this.button = 0;
+  this.buttons = 1;
+
+  this.type = event.type;
+}
+
+SpurEvent.prototype.initFromPointerEvent = SpurEvent.prototype.initFromMouseEvent; // pointer events inherits from mouse events
+
 
 function PointerEvent(type) {
   SpurEvent.call(this, type);
@@ -67,53 +104,44 @@ PointerEvent.prototype = Object.create(SpurEvent.prototype, {
 });
 
 PointerEvent.prototype._initFromMouse = function (event, type) {
+  this.initFromMouseEvent(event);
+
   this.pointerId = MOUSE_IDENTIFIER;
   this.pointerType = pointerTypes.mouse;
   this.width = 0;
   this.height = 0;
-  this.pressure = event.force || event.webkitForce || 0;
+  this.pressure = event.force || event.webkitForce || 0.5;
   this.tiltX = 0;
   this.tiltY = 0;
   this.isPrimary = true;
 
-  this.clientX = event.clientX;
-  this.clientY = event.clientY;
-  this.screenX = event.screenX;
-  this.screenY = event.screenY;
-  this.pageX = event.pageX;
-  this.pageY = event.pageY;
   this.type = type;
-  this.target = event.target;
-  this.relatedTarget = event.relatedTarget;
 
   this.originalEvent = event;
   return this;
 }
 
 PointerEvent.prototype._initFromTouch = function (event, touch, type, isPrimary) {
+  this.initFromTouchEvent(event, touch);
+
   this.pointerId = touch.identifier;
   this.pointerType = pointerTypes.touch;
   this.width = touch.radiusX || touch.webkitRadiusX || 0;
   this.height = touch.radiusY || touch.webkitRadiusY || 0;
-  this.pressure = touch.force || touch.webkitForce || 0;
+  this.pressure = touch.force || touch.webkitForce || 0.5;
   this.tiltX = 0;
   this.tiltY = 0;
   this.isPrimary = isPrimary;
 
-  this.clientX = touch.clientX;
-  this.clientY = touch.clientY;
-  this.screenX = touch.screenX;
-  this.screenY = touch.screenY;
-  this.pageX = touch.pageX;
-  this.pageY = touch.pageY;
   this.type = type;
-  this.target = touch.target;
 
   this.originalEvent = event;
   return this;
 }
 
 PointerEvent.prototype._initFromPointer = function (event, type) {
+  this.initFromPointerEvent(event);
+
   this.pointerId = event.pointerId;
   this.pointerType = event.pointerType;
   this.width = event.width;
@@ -122,16 +150,6 @@ PointerEvent.prototype._initFromPointer = function (event, type) {
   this.tiltX = event.tiltX;
   this.tiltY = event.tiltY;
   this.isPrimary = event.isPrimary;
-
-  this.clientX = event.clientX;
-  this.clientY = event.clientY;
-  this.screenX = event.screenX;
-  this.screenY = event.screenY;
-  this.pageX = event.pageX;
-  this.pageY = event.pageY;
-  this.type = type || event.type;
-  this.target = event.target;
-  this.relatedTarget = event.relatedTarget;
 
   this.originalEvent = event;
   return this;

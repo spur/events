@@ -18,7 +18,7 @@ var PointerTest = React.createClass({
   },
   onPointerLeave: function (e) {
     e.currentTarget.classList.remove('hover');
-    console.log('leave', e.currentTarget.className)
+    console.log('leave', e.currentTarget.className, 'is active', e.buttons !== 0)
   },
   onPointerDown: function (e) {
     console.log('pointer down', e.target.className);
