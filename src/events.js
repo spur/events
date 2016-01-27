@@ -12,8 +12,8 @@ function SpurEvent(type) {
   this.type = type;
   this.timeStamp = 0;
 
-  this.buttons = 0;
   this.button = -1;
+  this.buttons = 0;
 
   this.target = null;
   this.currentTarget = null;
@@ -121,7 +121,7 @@ PointerEvent.prototype._initFromMouse = function (event, type) {
   return this;
 }
 
-PointerEvent.prototype._initFromTouch = function (event, touch, type, isPrimary) {
+PointerEvent.prototype._initFromTouch = function (event, touch, type, isPrimary, isUp) {
   this.initFromTouchEvent(event, touch);
 
   this.pointerId = touch.identifier;
@@ -132,6 +132,11 @@ PointerEvent.prototype._initFromTouch = function (event, touch, type, isPrimary)
   this.tiltX = 0;
   this.tiltY = 0;
   this.isPrimary = isPrimary;
+
+  if (isUp) {
+    this.button = -1;
+    this.buttons = 0;
+  }
 
   this.type = type;
 

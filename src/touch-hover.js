@@ -145,13 +145,13 @@ function end(e, primaryPointerId) {
     var isPrimary = touch.identifier === primaryId;
 
     if (hasOutListener) {
-      pointerEvent._initFromTouch(e, touch, pointerEventTypes.out, isPrimary);
+      pointerEvent._initFromTouch(e, touch, pointerEventTypes.out, isPrimary, true);
       pointerEvent.target = pointerInfo.target;
       dispatchEvent(pointerEvent);
     }
 
     if (hasLeaveListener) {
-      pointerObject.event._initFromTouch(e, touch, pointerEventTypes.leave, isPrimary);
+      pointerObject.event._initFromTouch(e, touch, pointerEventTypes.leave, isPrimary, true);
       pointerEvent.target = pointerInfo.path[0];
       for (var j = 0; j < pointerInfo.path.length; j += 1) {
         dispatchEventOn(pointerEvent, pointerInfo.path[j]);

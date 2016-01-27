@@ -82,7 +82,7 @@ window.addEventListener('touchend', function (e) {
     var touch = touches[i];
 
     if (hasListener) {
-      pointerEvent._initFromTouch(e, touch, pointerEventTypes.up, touch.identifier === primaryId);
+      pointerEvent._initFromTouch(e, touch, pointerEventTypes.up, touch.identifier === primaryId, true);
       dispatchEvent(pointerEvent);
     }
   }
@@ -107,7 +107,7 @@ window.addEventListener('touchcancel', function (e) {
     var touch = touches[i];
 
     if (hasListener) {
-      pointerEvent._initFromTouch(e, touch, pointerEventTypes.cancel, touch.identifier === primaryId);
+      pointerEvent._initFromTouch(e, touch, pointerEventTypes.cancel, touch.identifier === primaryId, true);
       dispatchEvent(pointerEvent);
     }
   }
