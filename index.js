@@ -1,4 +1,3 @@
-var downPointers = require('./src/current.js').downPointers;
 var domAPI = require('./src/dom-api.js');
 var events = require('./src/events.js');
 
@@ -10,7 +9,6 @@ if (window.PointerEvent) {
 }
 
 module.exports = {
-  downPointers: downPointers,
   PointerEvent: events.PointerEvent,
   SpurEvent: events.SpurEvent,
   addListener: domAPI.addListener,

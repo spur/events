@@ -47,10 +47,9 @@ var PointerTest = React.createClass({
     //   console.log('hit last level')
     // }, { context: this, capture: true });
 
-    // addListener(window, 'pointermove', function (e) {
-    //   e.preventDefault();
-    //   console.log('pointermove', e.target);
-    // });
+    addListener(window, 'pointermove', function (e) {
+      e.preventDefault();
+    });
     
     // this.refs.firstLevel.addEventListener('pointerout', this.onPointer);
     // this.refs.firstLevel.addEventListener('pointerover', this.onPointer);

@@ -11,10 +11,7 @@ var pointerPool = require('./pointer-pool.js');
 var getPointerObject = pointerPool.getPointerObject;
 var releasePointerObject = pointerPool.releasePointerObject;
 
-var currentPointers = require('./current.js');
-var addPointer = currentPointers.addPointer;
-var updatePointer = currentPointers.updatePointer;
-var removePointer = currentPointers.removePointer;
+var primaryTouch = require('./touch.js').primaryTouch;
 
 var pointerHover = require('./pointer-hover.js');
 var handleEnterEvent = pointerHover.handleEnterEvent;
@@ -32,7 +29,6 @@ function handleEvent(e, pointerEventType) {
 }
 
 function isEventEmulated(e) {
-  var primaryTouch = currentPointers.primaryTouch;
   if (primaryTouch.timeStamp === 0) { return false; } // no touch events;
 
   if (e.timeStamp === 0) { return true; } // safari's simulated mouse events have a 0 timestamp.
@@ -46,19 +42,16 @@ function isEventEmulated(e) {
 
 window.addEventListener('mousedown', function (e) {
   if (isEventEmulated(e)) { return; }
-  addPointer(MOUSE_IDENTIFIER, mouseType, e.clientX, e.clientY, e.target);
   handleEvent(e, pointerEventTypes.down);
 }, true);
 
 window.addEventListener('mousemove', function (e) {
   if (isEventEmulated(e)) { return; }
-  updatePointer(MOUSE_IDENTIFIER, e.clientX, e.clientY, e.target);
   handleEvent(e, pointerEventTypes.move);
 }, true);
 
 window.addEventListener('mouseup', function (e) {
   if (isEventEmulated(e)) { return; }
-  removePointer(MOUSE_IDENTIFIER);
   handleEvent(e, pointerEventTypes.up);
 }, true);
 

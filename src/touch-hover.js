@@ -4,7 +4,6 @@ var dispatchEventOn = domAPI.dispatchEventOn;
 var hasListener = domAPI.hasListener;
 
 var pointerEventTypes = require('./core.js').pointerEventTypes;
-var pointers = require('./current.js').pointers;
 
 var pointerPool = require('./pointer-pool.js');
 var getPointerObject = pointerPool.getPointerObject;

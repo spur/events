@@ -11,17 +11,12 @@ var pointerPool = require('./pointer-pool.js');
 var getPointerObject = pointerPool.getPointerObject;
 var releasePointerObject = pointerPool.releasePointerObject;
 
-var currentPointers = require('./current.js');
-var addPointer = currentPointers.addPointer;
-var updatePointer = currentPointers.updatePointer;
-var removePointer = currentPointers.removePointer;
-
+var primaryTouch = { x: 0, y: 0, timeStamp: 0 };
 var primaryId = null;
 
 window.addEventListener('touchstart', function (e) {
   var firstTouch = e.touches[0];
   primaryId = firstTouch.identifier;
-  var primaryTouch = currentPointers.primaryTouch;
   primaryTouch.x = firstTouch.clientX;
   primaryTouch.y = firstTouch.clientY;
   primaryTouch.timeStamp = e.timeStamp;
@@ -33,7 +28,6 @@ window.addEventListener('touchstart', function (e) {
   var pointerEvent = pointerObject.event;
   for (var i = 0; i < touches.length; i += 1) {
     var touch = touches[i];
-    addPointer(touch.identifier, touchType, touch.clientX, touch.clientY, touch.target);
 
     if (hasListener) {
       pointerEvent._initFromTouch(e, touch, pointerEventTypes.down, touch.identifier === primaryId);
@@ -52,12 +46,8 @@ window.addEventListener('touchmove', function (e) {
   var pointerEvent = pointerObject.event;
   for (var i = 0; i < touches.length; i += 1) {
     var touch = touches[i];
-    updatePointer(touch.identifier, touch.clientX, touch.clientY, touch.target);
 
-    var isPrimary = touch.identifier === primaryId;
-
-    if (isPrimary) {
-      var primaryTouch = currentPointers.primaryTouch;
+    if (touch.identifier === primaryId) {
       primaryTouch.x = touch.clientX;
       primaryTouch.y = touch.clientY;
       primaryTouch.timeStamp = e.timeStamp;
@@ -78,7 +68,6 @@ window.addEventListener('touchend', function (e) {
   var firstTouch = e.touches[0];
   if (firstTouch) {
     primaryId = firstTouch.identifier;
-    var primaryTouch = currentPointers.primaryTouch;
     primaryTouch.x = firstTouch.clientX;
     primaryTouch.y = firstTouch.clientY;
     primaryTouch.timeStamp = e.timeStamp;
@@ -91,7 +80,6 @@ window.addEventListener('touchend', function (e) {
   var pointerEvent = pointerObject.event;
   for (var i = 0; i < touches.length; i += 1) {
     var touch = touches[i];
-    removePointer(touch.identifier);
 
     if (hasListener) {
       pointerEvent._initFromTouch(e, touch, pointerEventTypes.up, touch.identifier === primaryId);
@@ -105,7 +93,6 @@ window.addEventListener('touchcancel', function (e) {
   var firstTouch = e.touches[0];
   if (firstTouch) {
     primaryId = firstTouch.identifier;
-    var primaryTouch = currentPointers.primaryTouch;
     primaryTouch.x = firstTouch.clientX;
     primaryTouch.y = firstTouch.clientY;
     primaryTouch.timeStamp = e.timeStamp;
@@ -118,7 +105,6 @@ window.addEventListener('touchcancel', function (e) {
   var pointerEvent = pointerObject.event;
   for (var i = 0; i < touches.length; i += 1) {
     var touch = touches[i];
-    removePointer(touch.identifier);
 
     if (hasListener) {
       pointerEvent._initFromTouch(e, touch, pointerEventTypes.cancel, touch.identifier === primaryId);
@@ -127,3 +113,7 @@ window.addEventListener('touchcancel', function (e) {
   }
   releasePointerObject(pointerObject);
 }, true);
+
+module.exports = {
+  primaryTouch: primaryTouch
+};
