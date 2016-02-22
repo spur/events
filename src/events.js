@@ -2,6 +2,14 @@ var core = require('./core.js');
 var pointerTypes = core.pointerTypes;
 var MOUSE_IDENTIFIER = core.mouseIdentifier;
 
+var buttonsMap = [1, 4, 2, 8, 16];
+function getButtons(button) {
+	if (button === -1) {
+		return 0;
+	}
+	return buttonsMap[button];
+}
+
 function SpurEvent(type) {
   this.clientX = 0;
   this.clientY = 0;
@@ -57,7 +65,7 @@ SpurEvent.prototype.initFromMouseEvent = function (event) {
   this.relatedTarget = event.relatedTarget;
 
   this.button = event.button;
-  this.buttons = event.buttons;
+  this.buttons = event.buttons === undefined ? getButtons(event.button) : event.buttons;
 }
 
 SpurEvent.prototype.initFromTouchEvent = function (event, touch) {
