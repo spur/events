@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## SPUR EVENTS 0.1.2 - 2016-02-22
+## SPUR EVENTS 0.1.2 - 2016-02-25
 
 ### FIXES
 - buttons and button properties were wrong with touchend related events.
