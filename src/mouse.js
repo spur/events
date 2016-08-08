@@ -20,6 +20,10 @@ var handleLeaveEvent = pointerHover.handleLeaveEvent;
 var SIMULATED_DISTANCE = 10;
 var SIMULATED_MAX_TIME = 500;
 
+var baseNode = window;
+
+var lastHandledEvent = {};
+
 function handleEvent(e, pointerEventType) {
   if (!hasListener(pointerEventType)) { return }
   var pointerObject = getPointerObject();
@@ -40,30 +44,73 @@ function isEventEmulated(e) {
   return (Math.abs(primaryTouch.x - e.clientX) <= SIMULATED_DISTANCE) && (Math.abs(primaryTouch.y - e.clientY) <= SIMULATED_DISTANCE);
 }
 
+window.setTimeout(function() {
+  if (baseNode === window) { return; }
+
+  baseNode.addEventListener('mousedown', function (e) {
+    lastHandledEvent[e.type] = e.timeStamp;
+    if (isEventEmulated(e)) { return; }
+    handleEvent(e, pointerEventTypes.down);
+  }, false);
+
+  baseNode.addEventListener('mousemove', function (e) {
+    lastHandledEvent[e.type] = e.timeStamp;
+    if (isEventEmulated(e)) { return; }
+    handleEvent(e, pointerEventTypes.move);
+  }, false);
+
+  baseNode.addEventListener('mouseup', function (e) {
+    lastHandledEvent[e.type] = e.timeStamp;
+    if (isEventEmulated(e)) { return; }
+    handleEvent(e, pointerEventTypes.up);
+  }, false);
+
+  baseNode.addEventListener('mouseout', function (e) {
+    lastHandledEvent[e.type] = e.timeStamp;
+    if (isEventEmulated(e)) { return; }
+    handleEvent(e, pointerEventTypes.out);
+    handleLeaveEvent(e, '_initFromMouse');
+  }, false);
+
+  baseNode.addEventListener('mouseover', function (e) {
+    lastHandledEvent[e.type] = e.timeStamp;
+    if (isEventEmulated(e)) { return; }
+    handleEvent(e, pointerEventTypes.over);
+    handleEnterEvent(e, '_initFromMouse');
+  }, false);
+}, 0);
+
+
 window.addEventListener('mousedown', function (e) {
-  if (isEventEmulated(e)) { return; }
+  if (lastHandledEvent[e.type] === e.timeStamp || isEventEmulated(e)) { return; }
   handleEvent(e, pointerEventTypes.down);
-}, true);
+}, false);
 
 window.addEventListener('mousemove', function (e) {
-  if (isEventEmulated(e)) { return; }
+  if (lastHandledEvent[e.type] === e.timeStamp || isEventEmulated(e)) { return; }
   handleEvent(e, pointerEventTypes.move);
-}, true);
+}, false);
 
 window.addEventListener('mouseup', function (e) {
-  if (isEventEmulated(e)) { return; }
+  if (lastHandledEvent[e.type] === e.timeStamp || isEventEmulated(e)) { return; }
   handleEvent(e, pointerEventTypes.up);
-}, true);
+}, false);
 
 window.addEventListener('mouseout', function (e) {
-  if (isEventEmulated(e)) { return; }
+  if (lastHandledEvent[e.type] === e.timeStamp || isEventEmulated(e)) { return; }
   handleEvent(e, pointerEventTypes.out);
   handleLeaveEvent(e, '_initFromMouse');
-}, true);
+}, false);
 
 window.addEventListener('mouseover', function (e) {
-  if (isEventEmulated(e)) { return; }
+  if (lastHandledEvent[e.type] === e.timeStamp || isEventEmulated(e)) { return; }
   handleEvent(e, pointerEventTypes.over);
   handleEnterEvent(e, '_initFromMouse');
-}, true);
+}, false);
 
+
+module.exports = {
+  setupBaseNode: function(node) {
+    baseNode = node;
+  }
+};

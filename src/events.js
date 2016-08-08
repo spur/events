@@ -61,6 +61,7 @@ SpurEvent.prototype.initFromMouseEvent = function (event) {
   this.pageX = event.pageX;
   this.pageY = event.pageY;
   this.type = event.type;
+
   this.target = event.target;
   this.relatedTarget = event.relatedTarget;
 
@@ -77,7 +78,8 @@ SpurEvent.prototype.initFromTouchEvent = function (event, touch) {
   this.screenY = touch.screenY;
   this.pageX = touch.pageX;
   this.pageY = touch.pageY;
-  this.target = touch.target;
+
+  this.target = event.target;
 
   this.button = 0;
   this.buttons = 1;
@@ -156,7 +158,7 @@ PointerEvent.prototype._initFromPointer = function (event, type) {
   this.initFromPointerEvent(event);
 
   this.pointerId = event.pointerId;
-  this.pointerType = event.pointerType;
+  this.pointerType = event.pointerType || pointerTypes.mouse; // chrome implementation returns an empty string
   this.width = event.width;
   this.height = event.height;
   this.pressure = event.pressure;
@@ -165,6 +167,10 @@ PointerEvent.prototype._initFromPointer = function (event, type) {
   this.isPrimary = event.isPrimary;
 
   this.originalEvent = event;
+
+  if (type) {
+    this.type = type;
+  }
   return this;
 }
 

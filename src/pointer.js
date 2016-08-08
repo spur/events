@@ -12,6 +12,8 @@ var handleLeaveEvent = pointerHover.handleLeaveEvent;
 
 var pointerEventTypes = require('./core.js').pointerEventTypes;
 
+var baseNode = window;
+
 function handleNativePointer(e) {
   if (!hasListener(e.type)) { return; }
   var pointerObject = getPointerObject();
@@ -20,18 +22,25 @@ function handleNativePointer(e) {
   releasePointerObject(pointerObject);
 }
 
-window.addEventListener('pointerdown', handleNativePointer, true);
-window.addEventListener('pointermove', handleNativePointer, true);
-window.addEventListener('pointerup', handleNativePointer, true);
-window.addEventListener('pointercancel', handleNativePointer, true);
+window.setTimeout(function() {
+  baseNode.addEventListener('pointerdown', handleNativePointer, true);
+  baseNode.addEventListener('pointermove', handleNativePointer, true);
+  baseNode.addEventListener('pointerup', handleNativePointer, true);
+  baseNode.addEventListener('pointercancel', handleNativePointer, true);
 
-window.addEventListener('pointerout', function (e) {
-  handleNativePointer(e, pointerEventTypes.out);
-  handleLeaveEvent(e, '_initFromPointer');
-}, true);
+  baseNode.addEventListener('pointerout', function (e) {
+    handleNativePointer(e, pointerEventTypes.out);
+    handleLeaveEvent(e, '_initFromPointer');
+  }, true);
 
-window.addEventListener('pointerover', function (e) {
-  handleNativePointer(e, pointerEventTypes.over);
-  handleEnterEvent(e, '_initFromPointer');
-}, true);
+  baseNode.addEventListener('pointerover', function (e) {
+    handleNativePointer(e, pointerEventTypes.over);
+    handleEnterEvent(e, '_initFromPointer');
+  }, true);
+}, 0);
 
+module.exports = {
+  setupBaseNode: function(node) {
+    baseNode = node;
+  }
+};
