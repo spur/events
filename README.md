@@ -1,5 +1,7 @@
 # Spur Events
-Cross-browser & cross-platform event system based on the PointerEvent API defined by the w3c specifications (http://www.w3.org/TR/pointerevents/). This library supports every major browsers (Chrome, Safari, Edge, Firefox) on every major platforms (Windows, MacOSX, Linux, Android, iOS).
+Cross-browser & cross-platform event system based on the PointerEvent API defined by the w3c specifications
+(<http://www.w3.org/TR/pointerevents/>). This library supports every major browsers (Chrome, Safari, Edge, Firefox) on
+every major platforms (Windows, MacOSX, Linux, Android, iOS).
 
 This library provides you with 'touchenter', 'touchleave', 'touchover', 'touchout' events (here called 'pointerenter', 'pointerleave', 'pointerover' and 'pointerout') on touch devices.
 
@@ -34,7 +36,7 @@ function unmount(someDOMNode) {
 Add a listener to an EventTarget instance.
 
 **Arguments**
-- `target` (*Object*): An object that implements the EventTarget interface. Usually a DOM Node, or the `window` object or the `document` object.
+- `target` (*EventTarget*): An object that implements the EventTarget interface. Usually a DOM Node, or the `window` object or the `document` object.
 - `type` (*string*): The event type. It has to be one of the supported event (see below).
 - `listener` (*function*): The listener function.
 - `options` (*Object*):
@@ -47,7 +49,7 @@ Add a listener to an EventTarget instance.
 Remove the listeners for the specified type from an EventTarget instance.
 
 **Arguments**
-- `target` (*Object*): the TargetEvent instance to remove the listener from.
+- `target` (*EventTarget*): the EventTarget instance to remove the listener from.
 - `type` (*string*): The event type.
 - `listener` (*function*): The listener function.
 - `options` (*Object*):
@@ -59,7 +61,7 @@ Remove the listeners for the specified type from an EventTarget instance.
 Remove a listener that was added with a specific id.
 
 **Arguments**
-- `target` (*Object*): the TargetEvent instance to remove the listener from.
+- `target` (*EventTarget*): the EventTarget instance to remove the listener from.
 - `type` (*string*): The event type.
 - `id` (*string or number*): The listener id.
 
@@ -68,7 +70,7 @@ Remove a listener that was added with a specific id.
 Remove all listeners on the target.
 
 **Arguments**
-- `target` (*Object*): the TargetEvent instance to remove the listener from.
+- `target` (*EventTarget*): the EventTarget instance to remove the listener from.
 - `type` (*string*): The event type.
 
 
@@ -272,3 +274,28 @@ class PointerTest extend React.Component {
 Note that a PointerEvent with  a `pointerenter` or `pointerleave` type will not bubble.
 
 
+
+## Shadow DOM
+In order to user the Shadow DOM API, a new method was addded to the API:
+
+#### setupBaseNode
+`setupBaseNode(target)`
+Setup the main library listeners to the specified target.
+
+**Arguments**
+- `target` (*EventTarget*): the EventTarget instance to listen on.
+
+```javascript
+import { setupBaseNode } from 'spur-events';
+
+setupBaseNode(document);
+```
+
+By default, the listeners are attached to the window object.
+
+
+
+## For more information
+Here are this official docs:
+* <https://developer.mozilla.org/en/docs/Web/API/MouseEvent>
+* <https://developer.mozilla.org/en/docs/Web/API/PointerEvent>
