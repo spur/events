@@ -1,11 +1,21 @@
 var domAPI = require('./src/dom-api.js');
 var events = require('./src/events.js');
 
+var pointer, touch, mouse;
 if (window.PointerEvent) {
-  require('./src/pointer.js');
+  pointer = require('./src/pointer.js');
 } else {
-  require('./src/touch.js');
-  require('./src/mouse.js');
+  touch = require('./src/touch.js');
+  mouse = require('./src/mouse.js');
+}
+
+function setupBaseNode(node) {
+  if (window.PointerEvent) {
+    pointer.setupBaseNode(node);
+  } else {
+    touch.setupBaseNode(node);
+    mouse.setupBaseNode(node);
+  }
 }
 
 module.exports = {
@@ -15,5 +25,6 @@ module.exports = {
   removeListener: domAPI.removeListener,
   removeListenerById: domAPI.removeListenerById,
   removeAllListeners: domAPI.removeAllListeners,
-  dispatchEvent: domAPI.dispatch
+  dispatchEvent: domAPI.dispatch,
+  setupBaseNode: setupBaseNode
 };
