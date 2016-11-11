@@ -1,18 +1,26 @@
 # CHANGELOG
 
 
+## SPUR EVENTS 0.1.5 - 2016-11-11
+
+### FIXES
+- Correctly exposes the setupBaseNode method
+
+
 ## SPUR EVENTS 0.1.4 - 2016-11-10
 
-### IMPROVMENTS
+### IMPROVEMENTS
 - Added Typescript typings.
 
 
-## SPUR EVENTS 0.1.3 - 2016-11-10
+## SPUR EVENTS 0.1.3 - 2016-08-08
 
-### FEATURES
-- handle chrome pointer event implementation
-- handle mouse emulated events.
-- allow selecting a different base node to use the shadow DOM API.
+### FIXES
+- bug in chrome implantation of the PointerEvent API: pointer type is not defined.
+- mouse emulated events are now correctly ignored.
+
+### FEATURE
+- selection of the base node allows the API to be used inside shadow DOM components.
 
 
 ## SPUR EVENTS 0.1.2 - 2016-02-25
