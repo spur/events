@@ -62,8 +62,8 @@ declare module 'spur-events' {
 		id?: string | number
 	};
 
-	export function addListener(target: EventTarget, listenerType: string, callBack: (e: SpurEvent) => void, options?: ListenerOptions): void;
-	export function removeListener(target: EventTarget, listenerType: string, callBack: (e: SpurEvent) => void, options?: ListenerOptions): void;
+	export function addListener<T extends SpurEvent>(target: EventTarget, listenerType: string, callBack: (e: T) => void, options?: ListenerOptions): void;
+	export function removeListener<T extends SpurEvent>(target: EventTarget, listenerType: string, callBack: (e: T) => void, options?: ListenerOptions): void;
 	export function removeListenerById(target: EventTarget, listenerType: string, listenerId: string): void;
 	export function removeAllListeners(target: EventTarget, listenerType: string): void;
 	export function dispatchEvent(event: SpurEvent): void;
