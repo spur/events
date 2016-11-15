@@ -1,6 +1,12 @@
 # CHANGELOG
 
 
+## SPUR EVENTS 0.1.6 - 2016-11-15
+
+### IMPROVEMENTS
+- Typescript definitions: addListener and removeListener accept a generic parameter
+
+
 ## SPUR EVENTS 0.1.5 - 2016-11-11
 
 ### FIXES
