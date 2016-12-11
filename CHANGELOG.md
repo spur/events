@@ -1,6 +1,12 @@
 # CHANGELOG
 
 
+## SPUR EVENTS 0.1.7 - 2016-12-11
+
+### FIXES
+- typings: PointerEvent becomes SpurPointerEvents to avoid collision with the native class.
+
+
 ## SPUR EVENTS 0.1.6 - 2016-11-15
 
 ### IMPROVEMENTS
