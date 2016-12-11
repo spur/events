@@ -40,7 +40,7 @@ declare module 'spur-events' {
 		'pointerdown' | 'pointermove' | 'pointerup' | 'pointercancel' | 'pointerenter' | 'pointerover' |
 		'pointerleave' | 'pointerout';
 
-	export class PointerEvent extends SpurEvent {
+	export class SpurPointerEvent extends SpurEvent {
 		pointerId: string;
 		pointerType: PointerType;
 		type: PointerEventType;
