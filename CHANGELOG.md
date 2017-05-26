@@ -1,6 +1,12 @@
 # CHANGELOG
 
 
+## SPUR EVENTS 0.1.8 - 2017-05-26
+
+### IMPROVEMENTS
+- allow the library to run without crashing in a NodeJS environment to avoid resolving to library like ```browser-env``` / ```JSDOM```.
+
+
 ## SPUR EVENTS 0.1.7 - 2016-12-11
 
 ### FIXES
