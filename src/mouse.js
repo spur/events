@@ -2,6 +2,7 @@ var core = require('./core.js');
 var mouseType = core.pointerTypes.mouse;
 var MOUSE_IDENTIFIER = core.mouseIdentifier;
 var pointerEventTypes = core.pointerEventTypes;
+var window = core.window;
 
 var domAPI = require('./dom-api.js');
 var dispatchEvent = domAPI.dispatchEvent;

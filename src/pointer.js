@@ -10,9 +10,14 @@ var pointerHover = require('./pointer-hover.js');
 var handleEnterEvent = pointerHover.handleEnterEvent;
 var handleLeaveEvent = pointerHover.handleLeaveEvent;
 
-var pointerEventTypes = require('./core.js').pointerEventTypes;
+var core = require('./core.js');
+var pointerEventTypes = core.pointerEventTypes;
+var window = core.window;
 
-var baseNode = window;
+var baseNode = window || {
+  setTimeout: function () {},
+  addEventListener: function () {}
+};
 
 function handleNativePointer(e) {
   if (!hasListener(e.type)) { return; }

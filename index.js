@@ -1,3 +1,4 @@
+var window = require('./src/core.js').window;
 var domAPI = require('./src/dom-api.js');
 var events = require('./src/events.js');
 
@@ -19,7 +20,7 @@ function setupBaseNode(node) {
 }
 
 module.exports = {
-  PointerEvent: events.PointerEvent,
+  SpurPointerEvent: events.PointerEvent,
   SpurEvent: events.SpurEvent,
   addListener: domAPI.addListener,
   removeListener: domAPI.removeListener,

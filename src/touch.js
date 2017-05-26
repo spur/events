@@ -1,6 +1,7 @@
 var core = require('./core.js');
 var touchType = core.pointerTypes.touch;
 var pointerEventTypes = core.pointerEventTypes;
+var window = core.window;
 
 var domAPI = require('./dom-api.js');
 var dispatchEvent = domAPI.dispatchEvent;
@@ -14,7 +15,10 @@ var releasePointerObject = pointerPool.releasePointerObject;
 var primaryTouch = { x: 0, y: 0, timeStamp: 0 };
 var primaryId = null;
 
-var baseNode = window;
+var baseNode = window || {
+  setTimeout: function () {},
+  addEventListener: function () {}
+};
 
 window.setTimeout(function() {
   baseNode.addEventListener('touchstart', function (e) {

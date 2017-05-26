@@ -1,6 +1,7 @@
 var core = require('./core.js');
 var pointerTypes = core.pointerTypes;
 var MOUSE_IDENTIFIER = core.mouseIdentifier;
+var EventPhase = core.EventPhase;
 
 var buttonsMap = [1, 4, 2, 8, 16];
 function getButtons(button) {
@@ -29,7 +30,7 @@ function SpurEvent(type) {
 
   this.path = null;
   this.bubbles = true;
-  this.eventPhase = Event.NONE;
+  this.eventPhase = EventPhase.NONE;
   this.defaultPrevented = false;
 
   this.propagationStopped = false;
