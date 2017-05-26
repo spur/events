@@ -30,8 +30,22 @@ var pointerEventTypes = {
   out: POINTER_OUT
 };
 
+var EventPhase = {
+  NONE:	0,
+  CAPTURING_PHASE: 1,
+  AT_TARGET:	2,
+  BUBBLING_PHASE:	3
+};
+
+var myWindow = typeof(window) !== 'undefined' ? window : {
+  setTimeout: function () {},
+  addEventListener: function () {}
+};
+
 module.exports = {
   mouseIdentifier: MOUSE_IDENTIFIER,
   pointerTypes: pointerTypes,
-  pointerEventTypes: pointerEventTypes
+  pointerEventTypes: pointerEventTypes,
+  EventPhase: EventPhase,
+  window: myWindow
 };

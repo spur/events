@@ -1,3 +1,6 @@
+var core = require('./core.js');
+var window = core.window;
+
 function getPath(element) {
   var path = [];
   while (element !== null) {

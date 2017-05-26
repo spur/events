@@ -1,4 +1,6 @@
-var pointerEventTypes = require('./core.js').pointerEventTypes;
+var core = require('./core.js');
+var pointerEventTypes = core.pointerEventTypes;
+var EventPhase = core.EventPhase;
 var getPath = require('./utils.js').getPath;
 var releasePointerObject = require('./pointer-pool.js').releasePointerObject;
 var getDOMNodeId = require('spur-id').getDOMNodeId;
@@ -33,7 +35,7 @@ function resetEvent(event) {
   event.path = null;
   event.timeStamp = 0;
   event.currentTarget = null;
-  event.eventPhase = Event.NONE;
+  event.eventPhase = EventPhase.NONE;
 }
 
 function dispatchEventOn(event, target) {
@@ -41,9 +43,9 @@ function dispatchEventOn(event, target) {
   var element = target || event.target || document;
   event.path = null;
   event.timeStamp = event.timeStamp || Date.now();
-  event.eventPhase = Event.NONE;
+  event.eventPhase = EventPhase.NONE;
   dispatchEventOnElement(element, typeMap, event, false, true);
-  
+
   resetEvent(event);
 }
 
@@ -58,7 +60,7 @@ function dispatchEvent(event) {
   event.path = path;
   event.timeStamp = Date.now();
 
-  event.eventPhase = Event.CAPTURING_PHASE;
+  event.eventPhase = EventPhase.CAPTURING_PHASE;
   for (var i = path.length - 1; i > 0; i -= 1) {
     var element = path[i];
     dispatchEventOnElement(element, typeMap, event, true);
@@ -66,14 +68,14 @@ function dispatchEvent(event) {
   }
 
   if (path.length > 1) {
-    event.eventPhase = Event.AT_TARGET;
+    event.eventPhase = EventPhase.AT_TARGET;
     dispatchEventOnElement(event.target, typeMap, event, true);
     dispatchEventOnElement(event.target, typeMap, event, false);
   }
 
   if (!event.bubbles) { return resetEvent(event); }
 
-  event.eventPhase = Event.BUBBLING_PHASE;
+  event.eventPhase = EventPhase.BUBBLING_PHASE;
   for (var i = 1; i < path.length; i += 1) {
     var element = path[i];
     dispatchEventOnElement(path[i], typeMap, event, false);
